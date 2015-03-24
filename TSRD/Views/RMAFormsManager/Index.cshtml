@@ -1,0 +1,87 @@
+﻿@model IEnumerable<TSRD.Models.RMAForm>
+
+@{
+    ViewBag.Title = "報修總表";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contact)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactInfo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RMATime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReturnTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Closed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contact)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactInfo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RMATime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReturnTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Closed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedTime)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,81 @@
+﻿@model IEnumerable<TSRD.Models.WorkForm>
+
+@{
+    ViewBag.Title = "工單總表";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Contact)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AcceptedTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ClosedTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Closed)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comment)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CreatedTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ModifiedTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contact)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.AcceptedTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ClosedTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Closed)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comment)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CreatedTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ModifiedTime)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>

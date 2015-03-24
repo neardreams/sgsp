@@ -1,0 +1,90 @@
+﻿@model TSRD.Models.WorkForm
+
+@{
+    ViewBag.Title = "工單內容";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <h4>WorkForm</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Contact)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Contact)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcceptedTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcceptedTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ClosedTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ClosedTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Closed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Closed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Comment)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Comment)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ModifiedTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ModifiedTime)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
