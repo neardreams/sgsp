@@ -111,7 +111,7 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
             } else {
 #>
             @Html.LabelFor(model => model.<#= property.PropertyName #>, htmlAttributes: new { @class = "control-label col-md-2" })
-<#
+<#			
             }
 #>
             <div class="col-md-10">
@@ -122,7 +122,7 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <# 
             if (isControlHtmlAttributesSupported) {
 #>
-                @Html.DropDownList("<#= property.PropertyName #>", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("<#= property.PropertyName #>", null,"請選擇", htmlAttributes: new { @class = "form-control" })
 <#
             } else {
 #>
@@ -142,17 +142,17 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <#
                 } else if (property.IsEnum && !property.IsEnumFlags) {
 #>
-                @Html.EnumDropDownListFor(model => model.<#= property.PropertyName #>, htmlAttributes: new { @class = "form-control" })
+                @Html.EnumDropDownListFor(model => model.<#= property.PropertyName #>, "請選擇",htmlAttributes: new { @class = "form-control" })
 <#
                 } else {
 #>
                 @Html.EditorFor(model => model.<#= property.PropertyName #>, new { htmlAttributes = new { @class = "form-control" } })
-<#
+<#				
                 }
             } else {
 #>
                 @Html.EditorFor(model => model.<#= property.PropertyName #>)
-<#
+<#			
             }
 #>
 <# 

@@ -13,7 +13,7 @@ if(IsPartialView) {
 
 @{
 	ViewBag.TableDisplayName = "Table";
-	ViewBag.Title = "<#= ViewName#>";
+    ViewBag.Title = "<#= ViewName#>";
 <#
 if (!String.IsNullOrEmpty(LayoutPageFile)) {
 #>
@@ -45,46 +45,15 @@ if (!String.IsNullOrEmpty(LayoutPageFile)) {
     PushIndent("    ");
 }
 #>
-
-<div class="row">
-    <div class="col-md-4">
-	<p>
-		@Html.ActionLink("新增", "Create")
-	</p>
-	</div>
-	 @using (Html.BeginForm())
-    {
-		<div class="col-md-4">
-        @Html.AntiForgeryToken()
-
-			<#
-				IEnumerable<PropertyMetadata> properties = ModelMetadata.Properties;
-				foreach (PropertyMetadata property in properties) {
-				if (property.IsEnum && !property.IsEnumFlags){
-			#>
-			 @Html.DropDownList("<#= property.PropertyName #>", null,"請選擇",htmlAttributes: new { @class = "form-control" ,@style="display:inline"})
-			<input type="submit" class="btn btn-info" value="過濾"></input>    
-			<#
-				}
-				}
-			#>
-		</div>	 
-	    <div class="col-md-4">
-            @Html.TextBox("SearchString",null, new { type = "search", placeholder = "請輸入文字...", style = "display:inline" ,@class="form-control  text-box"})
-            <input type="submit" class="btn btn-info" value="搜尋"></input>                        
-        </div>
-    }
-
-</div>
-<div class="row">
-    <div class="col-md-12">
-
-
-<table class="table  table-hover table-striped">
+<p>
+    @Html.ActionLink("新增", "Create")
+</p>
+<table class="table">
     <tr>
 <#
+IEnumerable<PropertyMetadata> properties = ModelMetadata.Properties;
 foreach (PropertyMetadata property in properties) {
-    if (property.Scaffold && !property.IsPrimaryKey && !property.IsForeignKey) {	
+    if (property.Scaffold && !property.IsPrimaryKey && !property.IsForeignKey) {
 #>
 <#
         // We do not want to show any association properties for which there is
@@ -92,11 +61,13 @@ foreach (PropertyMetadata property in properties) {
         if (property.IsAssociation && GetRelatedModelMetadata(property) == null) {
             continue;
         }
+		if (property.PropertyName!="CreatedTime" && property.PropertyName!="ModifiedTime" && property.PropertyName!="Comment" && property.PropertyName!="Description")
+		{
 #>
         <th>
             @Html.DisplayNameFor(model => model.<#= GetValueExpression(property) #>)
         </th>
-<#		
+<#		}
     }
 }
 #>
@@ -115,11 +86,13 @@ foreach (PropertyMetadata property in properties) {
         if (property.IsAssociation && GetRelatedModelMetadata(property) == null) {
             continue;
         }
+		if (property.PropertyName!="CreatedTime" && property.PropertyName!="ModifiedTime" && property.PropertyName!="Comment" && property.PropertyName!="Description")
+		{
 #>
         <td>
             @Html.DisplayFor(modelItem => <#= "item." + GetValueExpression(property) #>)
         </td>
-<#		
+<#		}
     }
 }
 
@@ -146,9 +119,6 @@ if (pkName != null) {
 }
 
 </table>
-    </div>
-
-</div>
 <#
 // The following code closes the tag used in the case of a view using a layout page and the body and html tags in the case of a regular view page
 #>

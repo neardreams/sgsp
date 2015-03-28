@@ -74,6 +74,7 @@ if (ReferenceScriptLibraries) {
 <#
 }
 #>
+
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
@@ -104,15 +105,15 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 #>
         <div class="form-group">
 <#
-        if (property.IsForeignKey) {
+        if (property.IsForeignKey) {		
 #>
             @Html.LabelFor(model => model.<#= property.PropertyName #>, "<#= GetAssociationName(property) #>", htmlAttributes: new { @class = "control-label col-md-2" })
 <#
         } else {
 #>
-            @Html.LabelFor(model => model.<#= property.PropertyName #>, htmlAttributes: new { @class = "control-label col-md-2" })
-<#
-        }
+			
+				@Html.LabelFor(model => model.<#= property.PropertyName #>, htmlAttributes: new { @class = "control-label col-md-2" })
+<#		}
 #>
             <div class="col-md-10">
 <#
@@ -122,7 +123,7 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <# 
             if (isControlHtmlAttributesSupported) {
 #>
-                @Html.DropDownList("<#= property.PropertyName #>", null, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("<#= property.PropertyName #>", null, "請選擇", htmlAttributes: new { @class = "form-control" })
 <#
             } else {
 #>
@@ -142,17 +143,17 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <#
             } else if (property.IsEnum && !property.IsEnumFlags) {
 #>
-                @Html.EnumDropDownListFor(model => model.<#= property.PropertyName #>, htmlAttributes: new { @class = "form-control" })
+                @Html.EnumDropDownListFor(model => model.<#= property.PropertyName #>, "請選擇",htmlAttributes: new { @class = "form-control" })
 <#
             } else {
 #>
                 @Html.EditorFor(model => model.<#= property.PropertyName #>, new { htmlAttributes = new { @class = "form-control" } })
-<#
+<#				
             } 
         } else {
-#>
+#>	
                 @Html.EditorFor(model => model.<#= property.PropertyName #>)
-<#
+<#				
         }
 #>
 <# 
@@ -183,14 +184,14 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 #>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="儲存" class="btn btn-default" />
             </div>
         </div>
     </div>
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("回到清單", "Index")
 </div>
 <#
 if(IsLayoutPageSelected && ReferenceScriptLibraries && IsBundleConfigPresent) {
