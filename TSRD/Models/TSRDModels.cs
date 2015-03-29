@@ -7,21 +7,65 @@ using System.Data.Entity;
 using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Data.Entity.Migrations;
 using System.Data.Entity.Infrastructure;
+using System.Web.Mvc;
+using TSRD.Enums;
 namespace TSRD.Models
 {
+
     public class TSRDModels
     {
     }
-    public class Unit
+    public class TSRDModelBaseMetadata
     {
+        [ScaffoldColumn(false)]
+        public object CreatedTime;
         
-        [Key]
-        public int ID { get; set; }
+        [ScaffoldColumn(false)]        
+        public object ModifiedTime;
 
+    }
+    //[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
+    //public class IsFilterColumnAttribute : Attribute
+    //{
+    //    public IsFilterColumnAttribute(bool isFilter);
+    //    public bool IsFilter { get;}
+    //}
+    [MetadataType(typeof(TSRDModelBaseMetadata))]
+    public class TSRDModelBase
+    {                
+        [Key]        
+        public int ID { get; set; }
+        
+        [Display(Name = "描述")]
+        [DataType(DataType.MultilineText)]
+        public string Description { get; set; }
+
+        [DataType(DataType.MultilineText)]
+        [Display(Name = "備註")]
+        public string Comment { get; set; }
+        
+        [DataType(DataType.DateTime)]
+        [Display(Name = "建立時間")]
+        [DisplayFormat(DataFormatString= "{0:yyyy/MM/dd HH:mm}",ApplyFormatInEditMode=true)]
+        public DateTime CreatedTime { get; set; }
+
+        
+        [DataType(DataType.DateTime)]
+        [Display(Name = "修改時間")]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
+        public DateTime? ModifiedTime { get; set; }
+
+        //public int CreatorId { get; set; }        
+        //public virtual ApplicationUser Creator { get; set; }
+        
+    }
+    public class Unit :TSRDModelBase
+    {        
         [Display(Name="名稱")]
+        [Required(ErrorMessage = "請輸入名稱")]
         public string Name { get; set; }
 
-        [Display(Name = "公司名稱")]
+        [Display(Name = "公司名稱")]        
         public string Company { get; set; }
 
         [Display(Name = "聯絡人")]
@@ -31,32 +75,21 @@ namespace TSRD.Models
         public string ContactInfo { get; set; }
 
         [Display(Name = "櫃號/員編")]
+        [Required(ErrorMessage = "請輸入櫃號/員編")]
         public string IDString { get; set; }
 
+        
         [Display(Name = "樓層")]
+        [Required(ErrorMessage = "請輸入樓層")]
         public string Floor { get; set; }
 
         [Display(Name = "區域")]
+        [Required(ErrorMessage = "請輸入區域")]
         public string Area { get; set; }
 
-        [Display(Name = "已停用")]
-        public string Enabled { get; set; }
+        [Display(Name = "已啟用")]
+        public bool Enabled { get; set; }
 
-        [Display(Name = "描述")]
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
 
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
@@ -65,14 +98,19 @@ namespace TSRD.Models
 
         public virtual ICollection<Property> Properties { get; set; }
 
+        public string ListedName
+        {
+            get
+            {
+                return Floor + " " + IDString + " " + Name;
+            }
+        }
         
         
     }
-
-    public class WorkForm
+    
+    public class WorkForm : TSRDModelBase
     {
-        [Key]
-        public int ID { get; set; }
 
         [Display(Name = "聯絡人")]
         public string Contact { get; set; }
@@ -89,98 +127,76 @@ namespace TSRD.Models
         public bool Closed { get; set; }
 
         [Display(Name = "案件類別")]
-        public string Type { get; set; }        
+        public WorkFormType WorkFormType { get; set; }
 
-        //public int UnitID { get; set; }
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]        
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
 
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }        
 
-        public virtual ICollection<WorkFormProperty> WorkFormProperties { get; set; }
+        [Display(Name = "單位")]
+        public int UnitID { get; set; }
+        
+        public virtual Unit Unit { get; set; }
 
-        public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }
+        //public virtual ICollection<WorkFormProperty> WorkFormProperties { get; set; }
+
+        //public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }
+
     }
        
 
-    public class WorkFormProperty
+    public class WorkFormProperty :TSRDModelBase
     {
-        
-        [Key]
-        public int ID { get; set; }
 
         [Display(Name = "數量")]
         public int Amount { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
+        //public int WorkFormID { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
+        public int PropertyID { get; set; }
 
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
+        //public virtual WorkForm WorkForm { get; set; }
 
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
-
+        public virtual Property Property { get; set; }
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
     }
-    public class WorkFormConsumable
+    public class WorkFormConsumable :TSRDModelBase
     {
-        
-        [Key]
-        public int ID { get; set; }
-
         [Display(Name = "數量")]
         public int Amount { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
+        //public int WorkFormID { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
+        public int ConsumableID { get; set; }
 
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
+        //public virtual WorkForm WorkForm { get; set; }        
 
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
-
-        //public int CreatorID { get; set; }
+        public virtual Consumable Consumable { get; set; }
+        ////public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
     }
-    public class RMAForm
+    public class RMAFormMetadata
     {
-        
-        [Key]
-        public int ID { get; set; }
+        //public enum Statuses
+        //{
+        //    待送修, 已送修, 待報價, 待匯款, 待返件, 待取件, 已取件
+        //}
+        ////[IsFilterColumn(true)]
+        //public Statuses Status;        
+    }
+    //[Bind(Include = "ID,Status, ListedName")]
+    [MetadataType(typeof(RMAFormMetadata))]
+    public class RMAForm :TSRDModelBase
+    {
+        public string ListedName
+        {
+            get { return Property.PropertyType.Name + " (" + Property.SN + ")"; }
+        }
 
         [Display(Name = "RMA狀態")]
-        public string Status { get; set; }
+        public RMAFormStatus Status { get; set; }
 
         [Display(Name = "聯絡人")]
         public string Contact { get; set; }
@@ -197,74 +213,44 @@ namespace TSRD.Models
         [Display(Name = "已結案")]
         public bool Closed { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
-
         [Display(Name = "財產")]
-        public int PropertyID { get; set; }
+        public int? PropertyID { get; set; }
 
         [Display(Name = "財產")]
         public virtual Property Property { get; set; }
+
+        public int? ConsumableID { get; set; }
+
+        public virtual Consumable Consumable { get; set; }
 
         //public int UnitID { get; set; }
         //public virtual Unit Unit { get; set; }        
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
     }
-    public class PropertyType
+    
+    public class PropertyType :TSRDModelBase
     {
-        [Key]
-        public int ID { get; set; }
-
         [Display(Name = "財產類別")]
         public string Type { get; set; }
 
         [Display(Name = "財產名稱")]
         public string Name { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
-
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
 
         public virtual ICollection<Property> Properties { get; set; }
     }
-    public class Property
+    public class Property :TSRDModelBase
     {
-        
-        [Key]
-        public int ID { get; set; }
-
         //public int Amount { get; set; }
         //public int PropertyTypeID { get; set; }
         //public int UnitID { get; set; }
+        public string ListedName
+        {
+            get { return NO + " " + PropertyType.Name + " (" + SN + ")"; }
+        }
         [Display(Name = "規格描述")]
         [DataType(DataType.MultilineText)]
         public string Specification { get; set; }
@@ -277,22 +263,6 @@ namespace TSRD.Models
 
         [Display(Name = "MACAddress")]
         public string MACAddress { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
 
         public int? PropertyTypeID { get; set; }
 
@@ -309,16 +279,17 @@ namespace TSRD.Models
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }
     }
-    public class Consumable
+    public class Consumable :TSRDModelBase
     {
-        
-        [Key]
-        public int ID { get; set; }
+        public string ListedName
+        {
+            get { return NO + " " + Name + "(" + Amount + ")"; }
+        }
 
         [Display(Name = "名稱")]
         public string Name { get; set; }
 
-        [Display(Name = "耗材編號")]
+        [Display(Name = "耗材編號")]        
         public string NO { get; set; }
 
         [Display(Name = "數量")]
@@ -327,21 +298,6 @@ namespace TSRD.Models
         [Display(Name = "已啟用")]
         public bool Enabled { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
 
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }                
@@ -349,31 +305,14 @@ namespace TSRD.Models
         public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }
 
         public virtual ICollection<RMAForm> RMAForms { get; set; }
+
+
         
     }
-    public class ConsumableForm
+    public class ConsumableForm :TSRDModelBase
     {
-        [Key]
-        public int ID { get; set; }
-
         [Display(Name = "數量")]        
         public int Amount { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "描述")]
-        public string Description { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [Display(Name = "備註")]
-        public string Comment { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "建立時間")]
-        public DateTime CreatedTime { get; set; }
-
-        [DataType(DataType.DateTime)]
-        [Display(Name = "修改時間")]
-        public DateTime? ModifiedTime { get; set; }
 
         [Display(Name = "耗材名稱")]
         public int ConsumableID { get; set; }
@@ -387,30 +326,27 @@ namespace TSRD.Models
         //public virtual ICollection<RMAForm> RMAForms { get; set; }
 
     }
-    public class TEST
-    {
-        [Key]
-        public int ID { get; set; }        
-        [DataType(DataType.MultilineText)]
-        public string Description { get; set; }
-        [DataType(DataType.MultilineText)]
-        public string Comment { get; set; }
-        public DateTime CreatedTime { get; set; }
-        public DateTime? ModifiedTime { get; set; }
-        public int CreatorID { get; set; }
-        public int ModifierID { get; set; }
-    }
     public class DefaultConnection : DbContext
     {
         public DbSet<Unit> Unit { get; set; }
         public DbSet<RMAForm> RMAForm { get; set; }
         public DbSet<WorkForm> WorkForm { get; set; }
         public DbSet<Property> Property { get; set; }
-        public DbSet<PropertyType> PropertyType { get; set; }
+        public DbSet<PropertyType> PropertyType { get; set; }        
+        public DbSet<Consumable> Consumable { get; set; }        
+        public DbSet<ConsumableForm> ConsumableForm { get; set; }
         public DbSet<WorkFormConsumable> WorkFormConsumable { get; set; }
-        public DbSet<Consumable> Consumable { get; set; }
         public DbSet<WorkFormProperty> WorkFormProperty { get; set; }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //modelBuilder.Entity<Unit>()
+            //    .HasMany(c => c.Properties).WithMany(i => i.Unit)
+            //    .Map(t => t.MapLeftKey("CourseID")
+            //        .MapRightKey("InstructorID")
+            //        .ToTable("CourseInstructor"));
 
-
+            //modelBuilder.Entity<Department>().MapToStoredProcedures();
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

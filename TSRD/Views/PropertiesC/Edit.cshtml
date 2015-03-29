@@ -1,4 +1,4 @@
-﻿@model TSRD.Models.WorkForm
+﻿@model TSRD.Models.Property
 
 @{
     ViewBag.Title = "Edit";
@@ -12,50 +12,48 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4 style="display:none">WorkForm</h4>
+        <h4 style="display:none">Property</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Contact, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Specification, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Specification, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Specification, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.AcceptedTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.SN, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.AcceptedTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AcceptedTime, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.SN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SN, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ClosedTime, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NO, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.ClosedTime, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ClosedTime, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NO, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NO, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Closed, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.MACAddress, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <div class="checkbox">
-                    @Html.EditorFor(model => model.Closed)
-                    @Html.ValidationMessageFor(model => model.Closed, "", new { @class = "text-danger" })
-                </div>
+                @Html.EditorFor(model => model.MACAddress, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MACAddress, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.PropertyTypeID, "PropertyTypeID", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.Type, "請選擇",htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                @Html.DropDownList("PropertyTypeID", null,"請選擇", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.PropertyTypeID, "", new { @class = "text-danger" })
             </div>
         </div>
 

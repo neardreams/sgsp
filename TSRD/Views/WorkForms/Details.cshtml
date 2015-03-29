@@ -1,12 +1,11 @@
 ﻿@model TSRD.Models.WorkForm
 
 @{
-    ViewBag.Title = "Delete";
+    ViewBag.Title = "Details";
 }
 
 <h2>@ViewBag.Title</h2>
 
-<h3>刪除後即不可回復，是否確認刪除?</h3>
 <div>
     <h4 style="display:none">WorkForm</h4>
     <hr />
@@ -52,11 +51,11 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayNameFor(model => model.WorkFormType)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Type)
+            @Html.DisplayFor(model => model.WorkFormType)
         </dd>
 
         <dt>
@@ -76,13 +75,8 @@
         </dd>
 
     </dl>
-
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
-
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
 </div>
+<p>
+    @Html.ActionLink("編輯", "Edit", new { id = Model.ID }) |
+    @Html.ActionLink("回到清單", "Index")
+</p>

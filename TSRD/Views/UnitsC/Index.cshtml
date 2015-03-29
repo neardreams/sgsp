@@ -1,0 +1,158 @@
+﻿@model IEnumerable<TSRD.Models.Unit>
+
+@{
+	ViewBag.TableDisplayName = "Table";
+	ViewBag.Title = "Index";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<div class="row">
+    <div class="col-md-4">
+	<p>
+		@Html.ActionLink("新增", "Create")
+	</p>
+	</div>
+	 @using (Html.BeginForm())
+    {
+		<div class="col-md-4">
+        @Html.AntiForgeryToken()
+
+					</div>	 
+	    <div class="col-md-4">
+            @Html.TextBox("SearchString",ViewData["SearchString"].ToString(), new { type = "search", placeholder = "請輸入文字...", style = "display:inline", @class = "form-control  text-box" })
+            <input type="submit" class="btn btn-info" value="搜尋"></input>                        
+        </div>
+    }
+    
+</div>
+<div class="row">
+    <div class="col-md-12">
+
+
+<table class="table  table-hover table-striped col">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Contact)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ContactInfo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IDString)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Floor)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Area)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Enabled)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comment)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Contact)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ContactInfo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.IDString)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Floor)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Area)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Enabled)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comment)
+        </td>
+        <td>
+            @Html.ActionLink("編輯", "Edit", new { id=item.ID }) |
+            @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) |
+            @Html.ActionLink("刪除", "Delete", new { id=item.ID })
+        </td>
+    </tr>
+}
+
+</table>
+    </div>
+
+</div>
+<div class="row">
+    @using (Html.BeginForm("Index", "UnitsC", FormMethod.Post, new { @class = "paging-form" }))
+    {
+        int CurrentPage = Convert.ToInt32(ViewData["CurrentPage"]);
+        int PageCount = Convert.ToInt32(ViewData["PageCount"]);
+        @Html.Hidden("SearchString");
+        @Html.Hidden("Page", null, new { @id = "hiddenPage" })
+        <div style="text-align:center;">
+            @if (CurrentPage == 1)
+            {
+                <input type="submit" value="&lt;&lt;" class="btn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&lt;" class="btn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&lt;&lt;" class="btn btn-default" onclick="$('#hiddenPage').val(@CurrentPage-10)" />
+                <input type="submit" value="&lt;" class="btn btn-default" onclick="$('#hiddenPage').val(@CurrentPage-1)" />
+            }
+            @if (CurrentPage == PageCount)
+            {
+                <input type="submit" value="&gt;" class="btn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&gt;&gt;" class="btn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&gt;" class="btn btn-default" onclick="$('#hiddenPage').val(@CurrentPage+1)" />
+                <input type="submit" value="&gt;&gt;" class="btn btn-default" onclick="$('#hiddenPage').val(@CurrentPage+10)" />
+            }
+        </div>
+        <div style="text-align:center;">
+            @for (int i = 1; i <= Convert.ToInt32(ViewData["PageCount"]); i++)
+            {
+                if (Convert.ToInt32(ViewData["CurrentPage"]) == i)
+                {
+                    <input type="submit" value="@i.ToString()" class="btn" style="cursor:text" />
+
+                }
+                else
+                {
+                    <input type="submit" value="@i.ToString()" class="paging-link btn btn-default" onclick="$('#hiddenPage').val($(this).val())" />
+                }
+            }
+        </div>
+
+    }
+</div>

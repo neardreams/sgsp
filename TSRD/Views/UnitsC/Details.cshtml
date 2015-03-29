@@ -1,4 +1,4 @@
-﻿@model TSRD.Models.WorkForm
+﻿@model TSRD.Models.Unit
 
 @{
     ViewBag.Title = "Details";
@@ -7,15 +7,23 @@
 <h2>@ViewBag.Title</h2>
 
 <div>
-    <h4 style="display:none">WorkForm</h4>
+    <h4 style="display:none">Unit</h4>
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Unit.Name)
+            @Html.DisplayNameFor(model => model.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Unit.Name)
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company)
         </dd>
 
         <dt>
@@ -27,35 +35,43 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AcceptedTime)
+            @Html.DisplayNameFor(model => model.ContactInfo)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AcceptedTime)
+            @Html.DisplayFor(model => model.ContactInfo)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.ClosedTime)
+            @Html.DisplayNameFor(model => model.IDString)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.ClosedTime)
+            @Html.DisplayFor(model => model.IDString)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Closed)
+            @Html.DisplayNameFor(model => model.Floor)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Closed)
+            @Html.DisplayFor(model => model.Floor)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.Type)
+            @Html.DisplayNameFor(model => model.Area)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.Type)
+            @Html.DisplayFor(model => model.Area)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Enabled)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Enabled)
         </dd>
 
         <dt>

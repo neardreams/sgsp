@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - SGSP Management</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -21,13 +21,13 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("派工", "Create", "WorkFormsManager")</li>
-                    <li>@Html.ActionLink("工單管理", "Index", "WorkFormsManager")</li>
-                    <li>@Html.ActionLink("財產管理", "Index", "PropertyTypes")</li>
-                    <li>@Html.ActionLink("子財產管理", "Index", "PropertiesManager")</li>
-                    <li>@Html.ActionLink("單位管理", "Index", "UnitsManager")</li>
-                    <li>@Html.ActionLink("耗材管理", "Index", "ConsumablesManager")</li>
-                    <li>@Html.ActionLink("維修管理", "Index", "RMAFormsManager")</li>
+                    <li>@Html.ActionLink("派工", "Create", "WorkFormsC")</li>
+                    <li>@Html.ActionLink("工單管理", "Index", "WorkFormsC")</li>
+                    <li>@Html.ActionLink("財產管理", "Index", "PropertyTypesC")</li>
+                    <li>@Html.ActionLink("單位管理", "Index", "UnitsC")</li>
+                    <li>@Html.ActionLink("耗材管理", "Index", "ConsumablesC")</li>
+                    <li>@Html.ActionLink("維修管理", "Index", "RMAFormsC")</li>
+                    <li>@Html.ActionLink("財產庫存", "Index", "PropertiesStock")</li>
                     
                 </ul>
                 @Html.Partial("_LoginPartial")
@@ -38,7 +38,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p style="display:none">&copy; @DateTime.Now.Year - SGSP Management</p>
         </footer>
     </div>
 
