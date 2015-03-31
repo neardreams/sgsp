@@ -4,41 +4,43 @@ using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using TSRD.Models;
 
 namespace TSRD.Controllers
 {
-    public class UnitsCController : Controller
+    public class PropertyTypesCController : Controller
     {
         private DefaultConnection db = new DefaultConnection();
 
-        // GET: UnitsC
-
-
+        // GET: PropertyTypesC
+        public ActionResult ByType(int id)
+        {
+            var properties = db.Property.Where(m => m.PropertyTypeID == id).AsQueryable();
+            return View(properties.ToList());
+        }
         public ActionResult Index()
         {
-			var unit = db.Unit.AsQueryable();
+			var propertyType = db.PropertyType.AsQueryable();
             int page;
             int pageCount;
             int pageSize;
             page = 1;
             pageSize = TSRD.Global.PageSize;
 			
-				pageCount = (unit.Count() / pageSize) + 1;
-			unit = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
+				pageCount = (propertyType.Count() / pageSize) + 1;
+			propertyType = propertyType.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
             ViewData["CurrentPage"] = 1;
-            return View(unit.ToList());
+            return View(propertyType.ToList());
         }
 
 		[HttpPost, ActionName("Index")]
         public ActionResult Index(string searchString, int? Page)
         {
-			var unit = db.Unit.AsQueryable();
+			var propertyType = db.PropertyType.AsQueryable();
             int page;
             int pageCount;
             int pageSize;
@@ -51,123 +53,114 @@ namespace TSRD.Controllers
 			if (!String.IsNullOrEmpty(searchString))
 			{   
 	
-				unit = unit.Where(m =>m.Name.Contains(searchString) || m.Company.Contains(searchString) || m.Contact.Contains(searchString) || m.ContactInfo.Contains(searchString) || m.IDString.Contains(searchString) || m.Floor.Contains(searchString) || m.Area.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
+				propertyType = propertyType.Where(m =>m.Type.Contains(searchString) || m.Name.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
 			}	
-            pageCount = (unit.Count() / pageSize) + 1;
+            pageCount = (propertyType.Count() / pageSize) + 1;
             if (page > pageCount)
                 page = pageCount;
-			unit  = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+			propertyType  = propertyType.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
             ViewData["SearchString"] = searchString;
             ViewData["PageCount"] = pageCount;
             ViewData["CurrentPage"] = page;  
-            return View(unit.ToList());
+            return View(propertyType.ToList());
         }
 
 
 
 
-        // GET: UnitsC/Details/5
+        // GET: PropertyTypesC/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = db.Unit.Find(id);
-            if (unit == null)
+            PropertyType propertyType = db.PropertyType.Find(id);
+            if (propertyType == null)
             {
                 return HttpNotFound();
             }
-            return View(unit);
+            return View(propertyType);
         }
 
-        // GET: UnitsC/Create
+        // GET: PropertyTypesC/Create
         public ActionResult Create()
-        {            
-            //Random random =  new Random(unchecked(DateTime.Now.Ticks.GetHashCode()));
-            //for (int i = 0; i < 500000;i++)
-            //{
-            //    db.Test.Add(new Test { Amount =random.Next(1, 60000) ,ID1=random.Next(1,500),ID2=random.Next(1,500),ID3=random.Next(1,500)});                   
-            //    if ((i % 50)==0)
-            //        db.SaveChanges();
-            //}
-            //ViewData["Total"] = db.Test.Where(m => m.ID1 == 100).AsQueryable().Sum(m => m.Amount);
-            db.SaveChanges();
+        {
             return View();
         }
 
-        // POST: UnitsC/Create
+        // POST: PropertyTypesC/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
+        public ActionResult Create([Bind(Include = "ID,Type,Name,Description,Comment,CreatedTime,ModifiedTime")] PropertyType propertyType)
         {
             if (ModelState.IsValid)
             {
-				//unit.CreatedTime = DateTime.Now;
-                db.Unit.Add(unit);
+				propertyType.CreatedTime = DateTime.Now;
+                db.PropertyType.Add(propertyType);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
-            return View(unit);
+            return View(propertyType);
         }
 
-        // GET: UnitsC/Edit/5
+        // GET: PropertyTypesC/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = db.Unit.Find(id);
-            if (unit == null)
+            PropertyType propertyType = db.PropertyType.Find(id);
+            if (propertyType == null)
             {
                 return HttpNotFound();
             }
-            return View(unit);
+            return View(propertyType);
         }
 
-        // POST: UnitsC/Edit/5
+        // POST: PropertyTypesC/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
+        public ActionResult Edit([Bind(Include = "ID,Type,Name,Description,Comment,CreatedTime,ModifiedTime")] PropertyType propertyType)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(unit).State = EntityState.Modified;
-				unit.ModifiedTime = DateTime.Now;
+                db.Entry(propertyType).State = EntityState.Modified;
+				propertyType.ModifiedTime = DateTime.Now;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            return View(unit);
+            return View(propertyType);
         }
 
-        // GET: UnitsC/Delete/5
+        // GET: PropertyTypesC/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = db.Unit.Find(id);
-            if (unit == null)
+            PropertyType propertyType = db.PropertyType.Find(id);
+            if (propertyType == null)
             {
                 return HttpNotFound();
             }
-            return View(unit);
+            return View(propertyType);
         }
 
-        // POST: UnitsC/Delete/5
+        // POST: PropertyTypesC/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Unit unit = db.Unit.Find(id);
-            db.Unit.Remove(unit);
+            PropertyType propertyType = db.PropertyType.Find(id);
+            db.PropertyType.Remove(propertyType);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

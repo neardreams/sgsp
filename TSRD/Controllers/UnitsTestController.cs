@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
@@ -16,19 +15,64 @@ namespace TSRD.Controllers
         private DefaultConnection db = new DefaultConnection();
 
         // GET: UnitsTest
-        public async Task<ActionResult> Index()
+
+
+        public ActionResult Index()
         {
-            return View(await db.Unit.ToListAsync());
+			var unit = db.Unit.AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = 1;
+            pageSize = TSRD.Global.PageSize;
+			
+				pageCount = (unit.Count() / pageSize) + 1;
+			unit = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
+            ViewData["SearchString"] = "";
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = 1;
+            return View(unit.ToList());
         }
 
+		[HttpPost, ActionName("Index")]
+        public ActionResult Index(string searchString, int? Page)
+        {
+			var unit = db.Unit.AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = Page ?? 1;
+            if (page < 1)
+                page = 1;
+            pageSize = TSRD.Global.PageSize;
+
+
+			if (!String.IsNullOrEmpty(searchString))
+			{   
+	
+				unit = unit.Where(m =>m.Name.Contains(searchString) || m.Company.Contains(searchString) || m.Contact.Contains(searchString) || m.ContactInfo.Contains(searchString) || m.IDString.Contains(searchString) || m.Floor.Contains(searchString) || m.Area.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
+			}	
+            pageCount = (unit.Count() / pageSize) + 1;
+            if (page > pageCount)
+                page = pageCount;
+			unit  = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            ViewData["SearchString"] = searchString;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = page;  
+            return View(unit.ToList());
+        }
+
+
+
+
         // GET: UnitsTest/Details/5
-        public async Task<ActionResult> Details(int? id)
+        public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = await db.Unit.FindAsync(id);
+            Unit unit = db.Unit.Find(id);
             if (unit == null)
             {
                 return HttpNotFound();
@@ -47,12 +91,13 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,Name,IDString,Floor,Area,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
+        public ActionResult Create([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
         {
             if (ModelState.IsValid)
             {
+				unit.CreatedTime = DateTime.Now;
                 db.Unit.Add(unit);
-                await db.SaveChangesAsync();
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -60,13 +105,13 @@ namespace TSRD.Controllers
         }
 
         // GET: UnitsTest/Edit/5
-        public async Task<ActionResult> Edit(int? id)
+        public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = await db.Unit.FindAsync(id);
+            Unit unit = db.Unit.Find(id);
             if (unit == null)
             {
                 return HttpNotFound();
@@ -79,25 +124,26 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,Name,IDString,Floor,Area,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
+        public ActionResult Edit([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(unit).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+				unit.ModifiedTime = DateTime.Now;
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(unit);
         }
 
         // GET: UnitsTest/Delete/5
-        public async Task<ActionResult> Delete(int? id)
+        public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Unit unit = await db.Unit.FindAsync(id);
+            Unit unit = db.Unit.Find(id);
             if (unit == null)
             {
                 return HttpNotFound();
@@ -108,11 +154,11 @@ namespace TSRD.Controllers
         // POST: UnitsTest/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int id)
         {
-            Unit unit = await db.Unit.FindAsync(id);
+            Unit unit = db.Unit.Find(id);
             db.Unit.Remove(unit);
-            await db.SaveChangesAsync();
+            db.SaveChanges();
             return RedirectToAction("Index");
         }
 

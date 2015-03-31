@@ -20,14 +20,34 @@ namespace TSRD.Controllers
         public ActionResult Index()
         {
 			var workForm = db.WorkForm.Include(w => w.Unit).AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = 1;
+            pageSize = TSRD.Global.PageSize;
+			
 			ViewBag.WorkFormType  = new SelectList(from TSRD.Enums.WorkFormType d in Enum.GetValues(typeof(TSRD.Enums.WorkFormType)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
+				pageCount = (workForm.Count() / pageSize) + 1;
+			workForm = workForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
+            ViewData["SearchString"] = "";
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = 1;
             return View(workForm.ToList());
         }
 
 		[HttpPost, ActionName("Index")]
-        public ActionResult Index(string searchString, TSRD.Enums.WorkFormType? WorkFormType)
+        public ActionResult Index(string searchString, TSRD.Enums.WorkFormType? WorkFormType, int? Page)
         {
 			var workForm = db.WorkForm.Include(w => w.Unit).AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = Page ?? 1;
+            if (page < 1)
+                page = 1;
+            pageSize = TSRD.Global.PageSize;
+
+
 			if (!String.IsNullOrEmpty(searchString))
 			{   
 	
@@ -38,7 +58,13 @@ namespace TSRD.Controllers
 			{
 				workForm = workForm.Where(m => m.WorkFormType == WorkFormType).AsQueryable();
 			}
-
+            pageCount = (workForm.Count() / pageSize) + 1;
+            if (page > pageCount)
+                page = pageCount;
+			workForm  = workForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            ViewData["SearchString"] = searchString;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = page;  
 			
             return View(workForm.ToList());
         }
@@ -64,7 +90,9 @@ namespace TSRD.Controllers
         // GET: WorkFormsC/Create
         public ActionResult Create()
         {
-            ViewBag.UnitID = new SelectList(db.Unit, "ID", "ListedName");
+            var units = db.Unit.OrderBy(m => m.Floor).ThenBy(m => m.Area).ThenBy(m => m.IDString);
+            ViewBag.UnitID = new SelectList(units, "ID", "ListedName");
+            ViewData["PropertyID"] = new SelectList(db.Property, "ID", "ListedName");
             return View();
         }
 
@@ -73,11 +101,21 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Contact,AcceptedTime,ClosedTime,Closed,WorkFormType,UnitID,Description,Comment,CreatedTime,ModifiedTime")] WorkForm workForm)
-        {
+        public ActionResult Create([Bind(Include = "ID,Contact,AcceptedTime,ClosedTime,Closed,WorkFormType,UnitID,Description,Comment,CreatedTime,ModifiedTime")] WorkForm workForm,int[] PropertyID)
+        {            
             if (ModelState.IsValid)
             {
+				workForm.CreatedTime = DateTime.Now;
                 db.WorkForm.Add(workForm);
+                db.SaveChanges();                
+                if (PropertyID!=null && PropertyID.Length>0)
+                {
+                    foreach (int propertyID in PropertyID)
+                    {
+                        //workForm.WorkFormProperties.Add(new WorkFormProperty { PropertyID = propertyID });
+                        db.WorkFormProperty.Add(new WorkFormProperty { WorkFormID=workForm.ID,CreatedTime=DateTime.Now,PropertyID=propertyID});
+                    }
+                }
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -98,6 +136,8 @@ namespace TSRD.Controllers
             {
                 return HttpNotFound();
             }
+            ViewData["PropertyID"] = new SelectList(db.Property, "ID", "ListedName");
+            ViewData["CurrentPropertyID"] = new SelectList(db.WorkFormProperty.Where(m => m.WorkFormID == id), "PropertyID", "PropertyListedName");
             ViewBag.UnitID = new SelectList(db.Unit, "ID", "ListedName", workForm.UnitID);
             return View(workForm);
         }
@@ -107,12 +147,33 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Contact,AcceptedTime,ClosedTime,Closed,WorkFormType,UnitID,Description,Comment,CreatedTime,ModifiedTime")] WorkForm workForm)
+        public ActionResult Edit([Bind(Include = "ID,Contact,AcceptedTime,ClosedTime,Closed,WorkFormType,UnitID,Description,Comment,CreatedTime,ModifiedTime")] WorkForm workForm,int[] PropertyID)
         {
             if (ModelState.IsValid)
-            {                
+            {
                 db.Entry(workForm).State = EntityState.Modified;
+				workForm.ModifiedTime = DateTime.Now;
                 db.SaveChanges();
+
+                var workformProperties = db.WorkFormProperty.Where(m => m.WorkFormID==workForm.ID);
+                if (workformProperties != null && workformProperties.Count() > 0)
+                { 
+                    foreach (WorkFormProperty workformProperty in workformProperties)
+                    {
+                        db.WorkFormProperty.Remove(workformProperty);
+                    }
+                    db.SaveChanges();
+                }
+                
+                if (PropertyID != null && PropertyID.Length > 0)
+                {
+                    foreach (int propertyID in PropertyID)
+                    {
+                            db.WorkFormProperty.Add(new WorkFormProperty { WorkFormID = workForm.ID, CreatedTime = DateTime.Now, PropertyID = propertyID });                                                 
+                    }
+                    db.SaveChanges();
+                }
+                
                 return RedirectToAction("Index");
             }
             ViewBag.UnitID = new SelectList(db.Unit, "ID", "ListedName", workForm.UnitID);

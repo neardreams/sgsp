@@ -10,30 +10,59 @@ using TSRD.Models;
 
 namespace TSRD.Controllers
 {
+    [Route("SubType")]
     public class PropertiesCController : Controller
     {
         private DefaultConnection db = new DefaultConnection();
 
         // GET: PropertiesC
-
-
-        public ActionResult Index()
+        
+        public ActionResult Index(int id)
         {
-			var property = db.Property.Include(p => p.PropertyType).Include(p => p.Unit).AsQueryable();
+            var property = db.Property.Where(m => m.PropertyTypeID == id).AsQueryable();
+            property = property.Include(p => p.PropertyType).Include(p => p.Unit).AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = 1;
+            pageSize = TSRD.Global.PageSize;
+			
+				pageCount = (property.Count() / pageSize) + 1;
+			property = property.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
+            ViewData["SearchString"] = "";
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = 1;
+            ViewData["PropertyTypeID"] = id;
             return View(property.ToList());
         }
 
 		[HttpPost, ActionName("Index")]
-        public ActionResult Index(string searchString)
+        public ActionResult Index(string searchString, int? Page,int id)
         {
-			var property = db.Property.Include(p => p.PropertyType).Include(p => p.Unit).AsQueryable();
+            var property = db.Property.Where(m => m.PropertyTypeID == id).AsQueryable();
+            property = property.Include(p => p.PropertyType).Include(p => p.Unit).AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = Page ?? 1;
+            if (page < 1)
+                page = 1;
+            pageSize = TSRD.Global.PageSize;
+
+
 			if (!String.IsNullOrEmpty(searchString))
 			{   
 	
 				property = property.Where(m =>m.Specification.Contains(searchString) || m.SN.Contains(searchString) || m.NO.Contains(searchString) || m.MACAddress.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
 			}	
-
-			
+            pageCount = (property.Count() / pageSize) + 1;
+            if (page > pageCount)
+                page = pageCount;
+			property  = property.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            ViewData["SearchString"] = searchString;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = page;
+            ViewData["PropertyTypeID"] = id;
             return View(property.ToList());
         }
 
@@ -72,6 +101,7 @@ namespace TSRD.Controllers
         {
             if (ModelState.IsValid)
             {
+				property.CreatedTime = DateTime.Now;
                 db.Property.Add(property);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -109,6 +139,7 @@ namespace TSRD.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(property).State = EntityState.Modified;
+				property.ModifiedTime = DateTime.Now;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
