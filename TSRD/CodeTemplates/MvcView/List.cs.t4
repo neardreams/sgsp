@@ -2,6 +2,7 @@
 <#@ output extension=".cshtml" #>
 <#@ include file="Imports.include.t4" #>
 @model IEnumerable<#= "<" + ViewDataTypeName + ">" #>
+<# IEnumerable<PropertyMetadata> properties = ModelMetadata.Properties; #>
 <#
 // The following chained if-statement outputs the file header code and markup for a partial view, a view using a layout page, or a regular view.
 if(IsPartialView) {
@@ -58,7 +59,7 @@ if (!String.IsNullOrEmpty(LayoutPageFile)) {
         @Html.AntiForgeryToken()
 
 			<#
-				IEnumerable<PropertyMetadata> properties = ModelMetadata.Properties;
+				
 				foreach (PropertyMetadata property in properties) {
 				if (property.IsEnum && !property.IsEnumFlags){
 			#>
@@ -149,6 +150,64 @@ if (pkName != null) {
     </div>
 
 </div>
+
+<div class="row">
+    @using (Html.BeginForm(@HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString(), @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString() , FormMethod.Post, new { @class = "paging-form" }))
+    {
+        int CurrentPage = Convert.ToInt32(ViewData["CurrentPage"]);
+        int PageCount = Convert.ToInt32(ViewData["PageCount"]);
+<#		foreach (PropertyMetadata property in properties) 
+		{
+			if (property.IsEnum && !property.IsEnumFlags)
+			{
+#>			
+			@Html.Hidden("<#= property.PropertyName #>",ViewData["<#= property.PropertyName #>"])
+<#			}
+		}
+#>
+
+        @Html.Hidden("SearchString");
+        @Html.Hidden("Page", null, new { @id = "hiddenPage" })
+        <div style="text-align:center;">
+            @if (CurrentPage == 1)
+            {
+                <input type="submit" value="&lt;&lt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&lt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&lt;&lt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage-10))" />
+                <input type="submit" value="&lt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@CurrentPage-1)" />
+            }
+            @if (CurrentPage == PageCount)
+            {
+                <input type="submit" value="&gt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&gt;&gt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&gt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage+1))" />
+                <input type="submit" value="&gt;&gt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage+10))" />
+            }
+        </div>
+        <div style="text-align:center;">
+            @for (int i = 1; i <= Convert.ToInt32(ViewData["PageCount"]); i++)
+            {
+                if (Convert.ToInt32(ViewData["CurrentPage"]) == i)
+                {
+                    <input type="submit" value="@i.ToString()" class="btn paging-dbtn" style="cursor:text" />
+
+                }
+                else
+                {
+                    <input type="submit" value="@i.ToString()" class="paging-btn btn btn-default" onclick="$('#hiddenPage').val($(this).val())" />
+                }
+            }
+        </div>
+
+    }
+</div>
+
 <#
 // The following code closes the tag used in the case of a view using a layout page and the body and html tags in the case of a regular view page
 #>
@@ -156,6 +215,7 @@ if (pkName != null) {
 if(!IsPartialView && !IsLayoutPageSelected) {
     ClearIndent();
 #>
+
 </body>
 </html>
 <#

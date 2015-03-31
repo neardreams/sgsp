@@ -62,6 +62,7 @@ namespace <#= Namespace #>
     var relatedProperties = ModelMetadata.RelatedEntities.ToDictionary(item => item.AssociationPropertyName);
 	IEnumerable<PropertyMetadata> properties = ModelMetadata.Properties;
 	var includeExpressions = "";
+	var globalClass = "TSRD.Global";	
     string bindAttribute;
     if (IsOverpostingProtectionRequired)
     {
@@ -85,9 +86,14 @@ namespace <#= Namespace #>
         public ActionResult Index()
 <# } #>
         {
-<#  
-        includeExpressions = String.Join("", relatedProperties.Values.Select(property => String.Format(".Include({0} => {0}.{1})", lambdaVar, property.AssociationPropertyName)));
+<#			includeExpressions = String.Join("", relatedProperties.Values.Select(property => String.Format(".Include({0} => {0}.{1})", lambdaVar, property.AssociationPropertyName)));
 #>			var <#= entitySetVar #> = db.<#= entitySetName #><#= includeExpressions #>.AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = 1;
+            pageSize = <#= globalClass #>.PageSize;
+			
 <#		foreach (PropertyMetadata property in properties) 
 		{
 				if (property.IsEnum && !property.IsEnumFlags)
@@ -95,7 +101,11 @@ namespace <#= Namespace #>
 #>			ViewBag.<#= property.PropertyName #>  = new SelectList(from <#= property.TypeName #> d in Enum.GetValues(typeof(<#= property.TypeName #>)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
 <#				}
 		} 
-#>
+#>				pageCount = (<#= entitySetVar #>.Count() / pageSize) + 1;
+			<#= entitySetVar #> = <#= entitySetVar #>.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
+            ViewData["SearchString"] = "";
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = 1;
 <#	 if(!String.IsNullOrEmpty(includeExpressions)) { #>
 <#		if (UseAsync) { #>
             return View(await <#= entitySetVar #>.ToListAsync());
@@ -122,15 +132,24 @@ namespace <#= Namespace #>
 
 <# if (UseAsync) { #>
 		[HttpPost, ActionName("Index")]
-        public async Task<ActionResult> Index(string searchString<#=pas#>)
+        public async Task<ActionResult> Index(string searchString<#=pas#>, int? Page)
 <# } else { #>
 		[HttpPost, ActionName("Index")]
-        public ActionResult Index(string searchString<#=pas#>)
+        public ActionResult Index(string searchString<#=pas#>, int? Page)
 <# } #>
         {
 <#  
-        includeExpressions = String.Join("", relatedProperties.Values.Select(property => String.Format(".Include({0} => {0}.{1})", lambdaVar, property.AssociationPropertyName)));
+			includeExpressions = String.Join("", relatedProperties.Values.Select(property => String.Format(".Include({0} => {0}.{1})", lambdaVar, property.AssociationPropertyName)));
 #>			var <#= entitySetVar #> = db.<#= entitySetName #><#= includeExpressions #>.AsQueryable();
+            int page;
+            int pageCount;
+            int pageSize;
+            page = Page ?? 1;
+            if (page < 1)
+                page = 1;
+            pageSize = <#= globalClass #>.PageSize;
+
+
 <#
 		string searchstr = "";
 		foreach (PropertyMetadata property in properties) 
@@ -163,7 +182,13 @@ namespace <#= Namespace #>
 			}
 		}
 #>
-
+            pageCount = (<#= entitySetVar #>.Count() / pageSize) + 1;
+            if (page > pageCount)
+                page = pageCount;
+			<#= entitySetVar #>  = <#= entitySetVar #>.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            ViewData["SearchString"] = searchString;
+            ViewData["PageCount"] = pageCount;
+            ViewData["CurrentPage"] = page;  
 <#	 if(!String.IsNullOrEmpty(includeExpressions)) { #>
 <#		if (UseAsync) { #>
             return View(await <#= entitySetVar #>.ToListAsync());
@@ -234,6 +259,7 @@ namespace <#= Namespace #>
 <# if(!String.IsNullOrEmpty(primaryKeyType) && String.Equals("System.Guid", primaryKeyType, StringComparison.OrdinalIgnoreCase)) { #>
                 <#= ModelVariable #>.<#= primaryKeyName #> = Guid.NewGuid();
 <# } #>
+				<#= ModelVariable #>.CreatedTime = DateTime.Now;
                 db.<#= entitySetName #>.Add(<#= ModelVariable #>);
 <# if (UseAsync) {#>
                 await db.SaveChangesAsync();
@@ -292,6 +318,7 @@ namespace <#= Namespace #>
             if (ModelState.IsValid)
             {
                 db.Entry(<#= ModelVariable #>).State = EntityState.Modified;
+				<#= ModelVariable #>.ModifiedTime = DateTime.Now;
 <# if (UseAsync) { #>
                 await db.SaveChangesAsync();
 <# } else { #>

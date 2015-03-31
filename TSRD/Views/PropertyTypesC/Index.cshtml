@@ -1,4 +1,4 @@
-﻿@model IEnumerable<TSRD.Models.Property>
+﻿@model IEnumerable<TSRD.Models.PropertyType>
 
 @{
 	ViewBag.TableDisplayName = "Table";
@@ -34,22 +34,10 @@
 <table class="table  table-hover table-striped">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.PropertyType.Type)
+            @Html.DisplayNameFor(model => model.Type)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Unit.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Specification)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SN)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NO)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MACAddress)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Description)
@@ -63,22 +51,10 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.PropertyType.Type)
+            @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Unit.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Specification)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SN)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NO)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MACAddress)
+            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Description)
@@ -89,7 +65,7 @@
         <td>
             @Html.ActionLink("編輯", "Edit", new { id=item.ID }) |
             @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) |
-            @Html.ActionLink("刪除", "Delete", new { id=item.ID })
+            @Html.ActionLink("管理清單", "Index","PropertiesC", new { id = item.ID },null)
         </td>
     </tr>
 }

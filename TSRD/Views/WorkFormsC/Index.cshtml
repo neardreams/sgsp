@@ -65,7 +65,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.Unit.Name)
+            @Html.DisplayFor(modelItem => item.Unit.ListedName)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Contact)
@@ -100,3 +100,54 @@
     </div>
 
 </div>
+
+<div class="row">
+    @using (Html.BeginForm("Index", @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString() , FormMethod.Post, new { @class = "paging-form" }))
+    {
+        int CurrentPage = Convert.ToInt32(ViewData["CurrentPage"]);
+        int PageCount = Convert.ToInt32(ViewData["PageCount"]);
+			
+			@Html.Hidden("WorkFormType",ViewData["WorkFormType"])
+
+        @Html.Hidden("SearchString");
+        @Html.Hidden("Page", null, new { @id = "hiddenPage" })
+        <div style="text-align:center;">
+            @if (CurrentPage == 1)
+            {
+                <input type="submit" value="&lt;&lt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&lt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&lt;&lt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage-10))" />
+                <input type="submit" value="&lt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@CurrentPage-1)" />
+            }
+            @if (CurrentPage == PageCount)
+            {
+                <input type="submit" value="&gt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+                <input type="submit" value="&gt;&gt;" class="btn paging-dbtn" style="cursor:text;" onclick="return false;" />
+            }
+            else
+            {
+                <input type="submit" value="&gt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage+1))" />
+                <input type="submit" value="&gt;&gt;" class="btn btn-default paging-btn" onclick="$('#hiddenPage').val(@(CurrentPage+10))" />
+            }
+        </div>
+        <div style="text-align:center;">
+            @for (int i = 1; i <= Convert.ToInt32(ViewData["PageCount"]); i++)
+            {
+                if (Convert.ToInt32(ViewData["CurrentPage"]) == i)
+                {
+                    <input type="submit" value="@i.ToString()" class="btn paging-dbtn" style="cursor:text" />
+
+                }
+                else
+                {
+                    <input type="submit" value="@i.ToString()" class="paging-btn btn btn-default" onclick="$('#hiddenPage').val($(this).val())" />
+                }
+            }
+        </div>
+
+    }
+</div>
+

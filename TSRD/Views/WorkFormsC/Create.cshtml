@@ -88,7 +88,14 @@
                 @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
             </div>
         </div>
+        <div class="form-group">
 
+            <label class="control-label col-md-2">財產轉移</label>            
+            <div class="col-md-10">
+                @Html.GMultiSelectFor("PropertyID")                
+                @*@Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })*@
+            </div>
+        </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="儲存" class="btn btn-default" />

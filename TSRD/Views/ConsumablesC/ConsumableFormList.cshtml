@@ -1,20 +1,20 @@
-﻿@model IEnumerable<TSRD.Models.Property>
+﻿@model IEnumerable<TSRD.Models.ConsumableForm>
 
 @{
 	ViewBag.TableDisplayName = "Table";
-	ViewBag.Title = "Index";
+	ViewBag.Title = "入庫/報廢清單";
 }
 
-<h2>@ViewBag.Title</h2>
+<h2>@ViewData["ConsumableName"].ToString() @ViewBag.Title </h2>
 
 
 <div class="row">
     <div class="col-md-4">
-	<p>
-		@Html.ActionLink("新增", "Create")
-	</p>
+	@*<p>
+		@Html.ActionLink("新增", "List")
+	</p>*@
 	</div>
-	 @using (Html.BeginForm())
+	 @*@using (Html.BeginForm())
     {
 		<div class="col-md-4">
         @Html.AntiForgeryToken()
@@ -22,9 +22,9 @@
 					</div>	 
 	    <div class="col-md-4">
             @Html.TextBox("SearchString",null, new { type = "search", placeholder = "請輸入文字...", style = "display:inline" ,@class="form-control  text-box"})
-            <input type="submit" class="btn btn-info" value="搜尋"></input>                        
+            <input type="submit" class="btn btn-info" value="搜尋" />                        
         </div>
-    }
+    }*@
 
 </div>
 <div class="row">
@@ -34,73 +34,51 @@
 <table class="table  table-hover table-striped">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.PropertyType.Type)
+            類別
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Unit.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Specification)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.SN)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.NO)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.MACAddress)
+            @Html.DisplayNameFor(model => model.Amount)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Comment)
+            @Html.DisplayNameFor(model => model.CreatedTime)
         </th>
-        <th></th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.PropertyType.Type)
+            @if (item.Amount>0)
+            {
+                @Html.Raw("入庫")
+            }
+            else
+            { 
+                @Html.Raw("報廢")
+            }
+
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Unit.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Specification)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.SN)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.NO)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.MACAddress)
+            @Html.DisplayFor(modelItem => item.Amount)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Comment)
-        </td>
-        <td>
-            @Html.ActionLink("編輯", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) |
-            @Html.ActionLink("刪除", "Delete", new { id=item.ID })
+            @Html.DisplayFor(modelItem => item.CreatedTime)
         </td>
     </tr>
 }
 
 </table>
     </div>
-
+    @Html.ActionLink("回到耗材清單", "Index")
 </div>
 
 <div class="row">
-    @using (Html.BeginForm("Index", @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString() , FormMethod.Post, new { @class = "paging-form" }))
+    @using (Html.BeginForm(@HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString(), @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString(), FormMethod.Post, new { @class = "paging-form" }))
     {
         int CurrentPage = Convert.ToInt32(ViewData["CurrentPage"]);
         int PageCount = Convert.ToInt32(ViewData["PageCount"]);

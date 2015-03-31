@@ -102,6 +102,7 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <#
         } else if (!property.IsReadOnly) {
 #>
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
 <#
             if (property.IsForeignKey) {

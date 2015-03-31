@@ -17,6 +17,7 @@
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Contact, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -25,6 +26,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.AcceptedTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -33,6 +35,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.ClosedTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -41,6 +44,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Closed, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -51,6 +55,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.WorkFormType, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -59,6 +64,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.UnitID, "UnitID", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -67,6 +73,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -75,6 +82,7 @@
             </div>
         </div>
 
+		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -83,6 +91,17 @@
             </div>
         </div>
 
+        @Html.HiddenFor(model => model.WorkFormProperties)
+        <div class="form-group">
+            @Html.LabelFor(model => model.WorkFormProperties, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.GMultiSelectFor("PropertyID")
+                @*@Html.EditorFor(model => model.Comment, new { htmlAttributes = new { @class = "form-control" } })*@
+                @Html.ValidationMessageFor(model => model.Comment, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        
+        
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="儲存" class="btn btn-default" />

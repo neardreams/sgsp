@@ -7,6 +7,7 @@ namespace TSRD.Migrations
     using System.Linq;
     using TSRD.Models;
     using TSRD.Enums;
+    
     internal sealed class Configuration : DbMigrationsConfiguration<TSRD.Models.DefaultConnection>
     {
         public Configuration()
@@ -24,14 +25,15 @@ namespace TSRD.Migrations
             foreach (var workform in workforms)
                 context.WorkForm.Remove(workform);
             context.SaveChanges();
-            var units = context.Unit.Where(a => a.ID == a.ID).ToList();
-            foreach (var unit in units)
-                context.Unit.Remove(unit);
-            context.SaveChanges();
 
             var properties = context.Property.Where(a => a.ID == a.ID).ToList();
             foreach (var property in properties)
                 context.Property.Remove(property);
+            context.SaveChanges();
+
+            var units = context.Unit.Where(a => a.ID == a.ID).ToList();
+            foreach (var unit in units)
+                context.Unit.Remove(unit);
             context.SaveChanges();
 
             var propertytypes = context.PropertyType.Where(a => a.ID == a.ID).ToList();
@@ -44,6 +46,10 @@ namespace TSRD.Migrations
                 context.Consumable.Remove(consumable);
             context.SaveChanges();
 
+            var tests = context.Test.Where(a => a.ID == a.ID).ToList();
+            foreach (var test in tests)
+                context.Test.Remove(test);
+            context.SaveChanges();
 
             context.Unit.AddOrUpdate(x => x.ID,
                 new Unit { Name = "Louis Vuitton", IDString = "B1A01", Floor = "5F", Area = "A", CreatedTime = DateTime.Now, Enabled = true },
@@ -135,12 +141,12 @@ namespace TSRD.Migrations
                 );
             context.SaveChanges();
             context.Consumable.AddOrUpdate(x => x.ID,
-                new Consumable { Amount = 50, CreatedTime = DateTime.Now, Enabled = true, Name = "HUB (4PORT)", Description = "D-Link", NO = "HUB01" },
-                new Consumable { Amount = 100, CreatedTime = DateTime.Now, Enabled = true, Name = "排插 (白)", Description = "雙面十孔", NO = "AC01" },
-                new Consumable { Amount = 100, CreatedTime = DateTime.Now, Enabled = true, Name = "網路線 (1米)", Description = "CAT5E", NO = "AC02" },
-                new Consumable { Amount = 100, CreatedTime = DateTime.Now, Enabled = false, Name = "網路線 (1米)", Description = "CAT5", NO = "AC02" },
-                new Consumable { Amount = 100, CreatedTime = DateTime.Now, Enabled = true, Name = "網路線 (1箱)", Description = "CAT5E", NO = "AC03" },
-                new Consumable { Amount = 100, CreatedTime = DateTime.Now, Enabled = true, Name = "水晶頭", Description = "CAT5E", NO = "NA001" }
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = true, Name = "HUB (4PORT)", Description = "D-Link", NO = "HUB01" },
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = true, Name = "排插 (白)", Description = "雙面十孔", NO = "AC01" },
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = true, Name = "網路線 (1米)", Description = "CAT5E", NO = "AC02" },
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = false, Name = "網路線 (1米)", Description = "CAT5", NO = "AC02" },
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = true, Name = "網路線 (1箱)", Description = "CAT5E", NO = "AC03" },
+                new Consumable { Amount = 0, CreatedTime = DateTime.Now, Enabled = true, Name = "水晶頭", Description = "CAT5E", NO = "NA001" }
                 );
             context.WorkForm.AddOrUpdate(x=>x.ID,
                 new WorkForm { AcceptedTime = DateTime.Now, Closed = false, WorkFormType = WorkFormType.安裝工單, Contact = "陳冠希", Description = "安裝POS機一台", CreatedTime = DateTime.Now, UnitID = context.Unit.Single(u => u.Name == "陳大一").ID },
@@ -149,7 +155,49 @@ namespace TSRD.Migrations
                 );
             context.SaveChanges();
             context.RMAForm.AddOrUpdate(x=>x.ID,
-                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now }
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機123", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機124", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機125", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機126", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機127", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機128", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機129", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機130", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機131", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機132", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機133", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機134", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機135", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機136", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機137", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機123", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機124", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機125", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機126", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機127", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機128", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機129", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機130", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機131", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機132", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機133", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機134", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機135", Status = RMAFormStatus.已取件, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機136", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機123", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機124", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機125", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機126", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機127", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機128", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機129", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機130", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機131", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機132", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機133", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機134", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機135", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now },
+                new RMAForm { CreatedTime = DateTime.Now, Contact = "聯強國際", ContactInfo = "06-2003000", Description = "不開機136", Status = RMAFormStatus.已送修, PropertyID = context.Property.Single(p => p.SN == "ABCD00001").ID, Closed = false, RMATime = DateTime.Now, ReturnTime = DateTime.Now }
                 );
             context.SaveChanges();
 

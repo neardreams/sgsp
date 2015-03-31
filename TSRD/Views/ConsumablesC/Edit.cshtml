@@ -1,4 +1,4 @@
-﻿@model TSRD.Models.Unit
+﻿@model TSRD.Models.Consumable
 
 @{
     ViewBag.Title = "Edit";
@@ -12,7 +12,7 @@
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4 style="display:none">Unit</h4>
+        <h4 style="display:none">Consumable</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         @Html.HiddenFor(model => model.ID)
@@ -28,55 +28,19 @@
 
 		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
-            @Html.LabelFor(model => model.Company, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.NO, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.NO, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NO, "", new { @class = "text-danger" })
             </div>
         </div>
 
 		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
-            @Html.LabelFor(model => model.Contact, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Contact, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Contact, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-		@Html.HiddenFor(model=>model.CreatedTime)
-        <div class="form-group">
-            @Html.LabelFor(model => model.ContactInfo, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ContactInfo, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ContactInfo, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-		@Html.HiddenFor(model=>model.CreatedTime)
-        <div class="form-group">
-            @Html.LabelFor(model => model.IDString, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.IDString, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.IDString, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-		@Html.HiddenFor(model=>model.CreatedTime)
-        <div class="form-group">
-            @Html.LabelFor(model => model.Floor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Floor, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Floor, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-		@Html.HiddenFor(model=>model.CreatedTime)
-        <div class="form-group">
-            @Html.LabelFor(model => model.Area, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Area, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Area, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
             </div>
         </div>
 
