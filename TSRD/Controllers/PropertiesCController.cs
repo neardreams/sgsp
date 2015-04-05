@@ -26,8 +26,8 @@ namespace TSRD.Controllers
             int pageSize;
             page = 1;
             pageSize = TSRD.Global.PageSize;
-			
-				pageCount = (property.Count() / pageSize) + 1;
+
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(property.Count()) / pageSize));
 			property = property.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -54,8 +54,8 @@ namespace TSRD.Controllers
 			{   
 	
 				property = property.Where(m =>m.Specification.Contains(searchString) || m.SN.Contains(searchString) || m.NO.Contains(searchString) || m.MACAddress.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
-			}	
-            pageCount = (property.Count() / pageSize) + 1;
+			}
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(property.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
 			property  = property.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
@@ -85,9 +85,10 @@ namespace TSRD.Controllers
         }
 
         // GET: PropertiesC/Create
-        public ActionResult Create()
-        {
-            ViewBag.PropertyTypeID = new SelectList(db.PropertyType, "ID", "ListedName");
+        public ActionResult Create(int id)
+        {            
+            ViewData["PropertyID"] = id;
+            ViewData["PropertyName"] = db.Property.Single(m => m.ID == id);
             ViewBag.UnitID = new SelectList(db.Unit, "ID", "ListedName");
             return View();
         }
@@ -97,7 +98,7 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Specification,SN,NO,MACAddress,PropertyTypeID,UnitID,Description,Comment,CreatedTime,ModifiedTime")] Property property)
+        public ActionResult Create([Bind(Include = "ID,Specification,SN,NO,MACAddress,PropertyTypeID,UnitID,Description,Comment,CreatedTime,ModifiedTime")] Property property, int id)
         {
             if (ModelState.IsValid)
             {
@@ -107,7 +108,8 @@ namespace TSRD.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.PropertyTypeID = new SelectList(db.PropertyType, "ID", "ListedName", property.PropertyTypeID);
+            ViewData["PropertyID"] = id;
+            ViewData["PropertyName"] = db.Property.Single(m => m.ID == id);
             ViewBag.UnitID = new SelectList(db.Unit, "ID", "ListedName", property.UnitID);
             return View(property);
         }

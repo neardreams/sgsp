@@ -2,7 +2,7 @@
 
 @{
 	ViewBag.TableDisplayName = "Table";
-	ViewBag.Title = "Index";
+	ViewBag.Title = "單位列表";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -100,8 +100,7 @@
         </td>
         <td>
             @Html.ActionLink("編輯", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) |
-            @Html.ActionLink("刪除", "Delete", new { id=item.ID })
+            @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) 
         </td>
     </tr>
 }

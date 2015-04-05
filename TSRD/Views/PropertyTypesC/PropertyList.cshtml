@@ -10,9 +10,9 @@
 
 <div class="row">
     <div class="col-md-4">
-	<p>
+	@*<p>
 		@Html.ActionLink("新增", "Create")
-	</p>
+	</p>*@
 	</div>
 	 @using (Html.BeginForm())
     {
@@ -34,10 +34,10 @@
 <table class="table  table-hover table-striped">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.PropertyType.Type)
+            @Html.DisplayNameFor(model => model.PropertyType.Name)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Unit.Name)
+            @Html.DisplayNameFor(model => model.Name)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Specification)
@@ -47,6 +47,9 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.NO)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Disabled)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.MACAddress)
@@ -63,10 +66,10 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.PropertyType.Type)
+            @Html.DisplayFor(modelItem => item.PropertyType.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.Unit.Name)
+            @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Specification)
@@ -78,6 +81,9 @@
             @Html.DisplayFor(modelItem => item.NO)
         </td>
         <td>
+            @Html.DisplayFor(modelItem => item.Disabled)
+        </td>
+        <td>
             @Html.DisplayFor(modelItem => item.MACAddress)
         </td>
         <td>
@@ -87,9 +93,8 @@
             @Html.DisplayFor(modelItem => item.Comment)
         </td>
         <td>
-            @Html.ActionLink("編輯", "Edit", new { id=item.ID }) |
-            @Html.ActionLink("詳細內容", "Details", new { id=item.ID }) |
-            @Html.ActionLink("刪除", "Delete", new { id=item.ID })
+            @Html.ActionLink("編輯", "EditProperty", new { id=item.ID }) |
+            @Html.ActionLink("詳細內容", "PropertyDetails", new { id=item.ID })            
         </td>
     </tr>
 }
@@ -100,7 +105,7 @@
 </div>
 
 <div class="row">
-    @using (Html.BeginForm("Index", @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString() , FormMethod.Post, new { @class = "paging-form" }))
+    @using (Html.BeginForm(@HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString(), @HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString(), FormMethod.Post, new { @class = "paging-form" }))
     {
         int CurrentPage = Convert.ToInt32(ViewData["CurrentPage"]);
         int PageCount = Convert.ToInt32(ViewData["PageCount"]);

@@ -1,7 +1,7 @@
 ﻿@model TSRD.Models.WorkForm
 
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "編緝派工單";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -26,7 +26,6 @@
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.AcceptedTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -35,7 +34,6 @@
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.ClosedTime, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -44,7 +42,6 @@
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Closed, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -55,25 +52,24 @@
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.WorkFormType, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EnumDropDownListFor(model => model.WorkFormType, "請選擇",htmlAttributes: new { @class = "form-control" })
+                @Html.HiddenFor(model => model.WorkFormType)
+                @Html.EnumDropDownListFor(model => model.WorkFormType, "請選擇", htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
                 @Html.ValidationMessageFor(model => model.WorkFormType, "", new { @class = "text-danger" })
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
-            @Html.LabelFor(model => model.UnitID, "UnitID", htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.UnitID, "單位", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("UnitID", null,"請選擇", htmlAttributes: new { @class = "form-control" })
+                @Html.HiddenFor(model=>model.UnitID)
+                @Html.DropDownList("UnitID", null,"請選擇", htmlAttributes: new { @class = "form-control" ,@disabled="disabled"})
                 @Html.ValidationMessageFor(model => model.UnitID, "", new { @class = "text-danger" })
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -82,7 +78,6 @@
             </div>
         </div>
 
-		@Html.HiddenFor(model=>model.CreatedTime)
         <div class="form-group">
             @Html.LabelFor(model => model.Comment, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">

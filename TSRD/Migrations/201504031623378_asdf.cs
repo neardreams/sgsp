@@ -3,7 +3,7 @@ namespace TSRD.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class initial : DbMigration
+    public partial class asdf : DbMigration
     {
         public override void Up()
         {
@@ -14,14 +14,29 @@ namespace TSRD.Migrations
                         ID = c.Int(nullable: false, identity: true),
                         Name = c.String(),
                         NO = c.String(),
-                        Amount = c.Int(nullable: false),
                         Enabled = c.Boolean(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID);
+            
+            CreateTable(
+                "dbo.ConsumableForms",
+                c => new
+                    {
+                        ID = c.Int(nullable: false, identity: true),
+                        Amount = c.Int(nullable: false),
+                        ConsumableID = c.Int(nullable: false),
+                        Description = c.String(),
+                        Comment = c.String(),
+                        CreatedTime = c.DateTime(),
+                        ModifiedTime = c.DateTime(),
+                    })
+                .PrimaryKey(t => t.ID)
+                .ForeignKey("dbo.Consumables", t => t.ConsumableID, cascadeDelete: true)
+                .Index(t => t.ConsumableID);
             
             CreateTable(
                 "dbo.RMAForms",
@@ -38,7 +53,7 @@ namespace TSRD.Migrations
                         ConsumableID = c.Int(),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
@@ -52,20 +67,22 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
+                        Name = c.String(nullable: false),
                         Specification = c.String(),
                         SN = c.String(),
                         NO = c.String(),
                         MACAddress = c.String(),
-                        PropertyTypeID = c.Int(),
-                        UnitID = c.Int(nullable: false),
+                        Disabled = c.Boolean(nullable: false),
+                        PropertyTypeID = c.Int(nullable: false),
+                        UnitID = c.Int(),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.PropertyTypes", t => t.PropertyTypeID)
-                .ForeignKey("dbo.Units", t => t.UnitID, cascadeDelete: true)
+                .ForeignKey("dbo.PropertyTypes", t => t.PropertyTypeID, cascadeDelete: true)
+                .ForeignKey("dbo.Units", t => t.UnitID)
                 .Index(t => t.PropertyTypeID)
                 .Index(t => t.UnitID);
             
@@ -74,11 +91,11 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Type = c.String(),
-                        Name = c.String(),
+                        Name = c.String(nullable: false),
+                        Disabled = c.Boolean(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID);
@@ -88,17 +105,17 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Name = c.String(),
+                        Name = c.String(nullable: false),
                         Company = c.String(),
                         Contact = c.String(),
                         ContactInfo = c.String(),
-                        IDString = c.String(),
-                        Floor = c.String(),
-                        Area = c.String(),
+                        IDString = c.String(nullable: false),
+                        Floor = c.String(nullable: false),
+                        Area = c.String(nullable: false),
                         Enabled = c.Boolean(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID);
@@ -108,15 +125,15 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Contact = c.String(),
+                        Contact = c.String(nullable: false),
                         AcceptedTime = c.DateTime(nullable: false),
                         ClosedTime = c.DateTime(),
                         Closed = c.Boolean(nullable: false),
-                        Type = c.Int(nullable: false),
+                        WorkFormType = c.Int(nullable: false),
                         UnitID = c.Int(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
@@ -128,15 +145,17 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Amount = c.Int(nullable: false),
+                        WorkFormID = c.Int(nullable: false),
                         PropertyID = c.Int(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.Properties", t => t.PropertyID, cascadeDelete: true)
+                .ForeignKey("dbo.WorkForms", t => t.WorkFormID, cascadeDelete: true)
+                .Index(t => t.WorkFormID)
                 .Index(t => t.PropertyID);
             
             CreateTable(
@@ -144,54 +163,62 @@ namespace TSRD.Migrations
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Amount = c.Int(nullable: false),
+                        WorkFormID = c.Int(nullable: false),
                         ConsumableID = c.Int(nullable: false),
+                        Amount = c.Int(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
                 .ForeignKey("dbo.Consumables", t => t.ConsumableID, cascadeDelete: true)
+                .ForeignKey("dbo.WorkForms", t => t.WorkFormID, cascadeDelete: true)
+                .Index(t => t.WorkFormID)
                 .Index(t => t.ConsumableID);
             
             CreateTable(
-                "dbo.ConsumableForms",
+                "dbo.PropertyForms",
                 c => new
                     {
                         ID = c.Int(nullable: false, identity: true),
-                        Amount = c.Int(nullable: false),
-                        ConsumableID = c.Int(nullable: false),
+                        PropertyID = c.Int(nullable: false),
                         Description = c.String(),
                         Comment = c.String(),
-                        CreatedTime = c.DateTime(nullable: false),
+                        CreatedTime = c.DateTime(),
                         ModifiedTime = c.DateTime(),
                     })
                 .PrimaryKey(t => t.ID)
-                .ForeignKey("dbo.Consumables", t => t.ConsumableID, cascadeDelete: true)
-                .Index(t => t.ConsumableID);
+                .ForeignKey("dbo.Properties", t => t.PropertyID, cascadeDelete: true)
+                .Index(t => t.PropertyID);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.ConsumableForms", "ConsumableID", "dbo.Consumables");
+            DropForeignKey("dbo.PropertyForms", "PropertyID", "dbo.Properties");
+            DropForeignKey("dbo.WorkFormConsumables", "WorkFormID", "dbo.WorkForms");
             DropForeignKey("dbo.WorkFormConsumables", "ConsumableID", "dbo.Consumables");
+            DropForeignKey("dbo.WorkFormProperties", "WorkFormID", "dbo.WorkForms");
             DropForeignKey("dbo.WorkFormProperties", "PropertyID", "dbo.Properties");
             DropForeignKey("dbo.WorkForms", "UnitID", "dbo.Units");
             DropForeignKey("dbo.Properties", "UnitID", "dbo.Units");
             DropForeignKey("dbo.RMAForms", "PropertyID", "dbo.Properties");
             DropForeignKey("dbo.Properties", "PropertyTypeID", "dbo.PropertyTypes");
             DropForeignKey("dbo.RMAForms", "ConsumableID", "dbo.Consumables");
-            DropIndex("dbo.ConsumableForms", new[] { "ConsumableID" });
+            DropForeignKey("dbo.ConsumableForms", "ConsumableID", "dbo.Consumables");
+            DropIndex("dbo.PropertyForms", new[] { "PropertyID" });
             DropIndex("dbo.WorkFormConsumables", new[] { "ConsumableID" });
+            DropIndex("dbo.WorkFormConsumables", new[] { "WorkFormID" });
             DropIndex("dbo.WorkFormProperties", new[] { "PropertyID" });
+            DropIndex("dbo.WorkFormProperties", new[] { "WorkFormID" });
             DropIndex("dbo.WorkForms", new[] { "UnitID" });
             DropIndex("dbo.Properties", new[] { "UnitID" });
             DropIndex("dbo.Properties", new[] { "PropertyTypeID" });
             DropIndex("dbo.RMAForms", new[] { "ConsumableID" });
             DropIndex("dbo.RMAForms", new[] { "PropertyID" });
-            DropTable("dbo.ConsumableForms");
+            DropIndex("dbo.ConsumableForms", new[] { "ConsumableID" });
+            DropTable("dbo.PropertyForms");
             DropTable("dbo.WorkFormConsumables");
             DropTable("dbo.WorkFormProperties");
             DropTable("dbo.WorkForms");
@@ -199,6 +226,7 @@ namespace TSRD.Migrations
             DropTable("dbo.PropertyTypes");
             DropTable("dbo.Properties");
             DropTable("dbo.RMAForms");
+            DropTable("dbo.ConsumableForms");
             DropTable("dbo.Consumables");
         }
     }

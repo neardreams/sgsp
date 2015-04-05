@@ -13,15 +13,18 @@ namespace TSRD.Models
     {
         [Display(Name = "財產類別")]
         [Required(ErrorMessage = "請輸入財產類別")]
-        public string Type { get; set; }
-
-        [Display(Name = "財產名稱")]
-        [Required(ErrorMessage = "請輸入財產名稱")]
         public string Name { get; set; }
+
+        [Display(Name = "報廢")]
+        public bool Disabled { get; set; }
+
+        //[Display(Name = "財產名稱")]
+        //[Required(ErrorMessage = "請輸入財產名稱")]
+        //public string Name { get; set; }
 
         public string ListedName
         {
-            get { return Type + "\t" + Name; }
+            get { return Name; }
         }
 
         //public int CreatorID { get; set; }

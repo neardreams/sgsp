@@ -92,6 +92,7 @@ if (ReferenceScriptLibraries) {
 <#      
     }
 #>
+		@Html.HiddenFor(model=>model.CreatedTime)
 <#
 foreach (PropertyMetadata property in ModelMetadata.Properties) {
     if (property.Scaffold && !property.IsAssociation) {
@@ -102,7 +103,7 @@ foreach (PropertyMetadata property in ModelMetadata.Properties) {
 <#
         } else if (!property.IsReadOnly) {
 #>
-		@Html.HiddenFor(model=>model.CreatedTime)
+
         <div class="form-group">
 <#
             if (property.IsForeignKey) {

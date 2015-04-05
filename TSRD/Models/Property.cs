@@ -17,8 +17,12 @@ namespace TSRD.Models
         //public int UnitID { get; set; }
         public string ListedName
         {
-            get { return NO + " " + PropertyType.Name + " (" + SN + ")"; }
+            get { return NO + " " + PropertyType.Name + " " +Name +" (" + SN + ")"; }
         }
+        [Display(Name = "品名/型號")]
+        [Required(ErrorMessage="請輸入型號名稱")]
+        public string Name { get; set; }
+
         [Display(Name = "規格描述")]
         [DataType(DataType.MultilineText)]
         public string Specification { get; set; }
@@ -35,11 +39,14 @@ namespace TSRD.Models
         [Display(Name = "報廢")]
         public bool Disabled { get; set; }
 
-        public int? PropertyTypeID { get; set; }
+        [Display(Name = "財產類別")]
+        public int PropertyTypeID { get; set; }
 
+        [Display(Name = "財產類別")]
         public virtual PropertyType PropertyType { get; set; }
 
-        public int UnitID { get; set; }
+        [Display(Name = "單位")]
+        public int? UnitID { get; set; }
 
         public virtual Unit Unit { get; set; }
 

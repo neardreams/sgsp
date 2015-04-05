@@ -27,7 +27,7 @@ namespace TSRD.Controllers
             pageSize = TSRD.Global.PageSize;
 			
 			ViewBag.Status  = new SelectList(from TSRD.Enums.RMAFormStatus d in Enum.GetValues(typeof(TSRD.Enums.RMAFormStatus)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
-				pageCount = (rMAForm.Count() / pageSize) + 1;
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(rMAForm.Count()) / pageSize));
 			rMAForm = rMAForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -56,16 +56,16 @@ namespace TSRD.Controllers
 			ViewBag.Status  = new SelectList(from TSRD.Enums.RMAFormStatus d in Enum.GetValues(typeof(TSRD.Enums.RMAFormStatus)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
 			if (Status!=null)
 			{
-				rMAForm = rMAForm.Where(m => m.Status == Status).AsQueryable();
+				rMAForm = rMAForm.Where(m => m.Status == Status.Value).AsQueryable();
 			}
-            pageCount = (rMAForm.Count() / pageSize) + 1;
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(rMAForm.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
-			rMAForm  = rMAForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+			rMAForm  = rMAForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize);
             ViewData["SearchString"] = searchString;
             ViewData["PageCount"] = pageCount;
             ViewData["CurrentPage"] = page;  
-			
+			            
             return View(rMAForm.ToList());
         }
 
@@ -100,20 +100,22 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Status,Contact,ContactInfo,RMATime,ReturnTime,Closed,PropertyID,ConsumableID,Description,Comment,CreatedTime,ModifiedTime")] RMAForm rMAForm,int[] PropertyID)
+        public ActionResult Create([Bind(Include = "ID,Status,Contact,ContactInfo,RMATime,ReturnTime,Closed,PropertyID,ConsumableID,Description,Comment,CreatedTime,ModifiedTime")] RMAForm rMAForm)
         {
+            if (rMAForm.ConsumableID==null && rMAForm.PropertyID==null)
+            {
+                ModelState.AddModelError("ConsumableID", "請選擇送修財產或耗材");
+                ModelState.AddModelError("PropertyID", "請選擇送修財產或耗材");
+            }
+            if (rMAForm.ConsumableID != null && rMAForm.PropertyID != null)
+            {
+                ModelState.AddModelError("ConsumableID", "送修財產或耗材只能選擇其一，請重新選擇");
+                ModelState.AddModelError("PropertyID", "送修財產或耗材只能選擇其一，請重新選擇");
+            }
             if (ModelState.IsValid)
             {
 				rMAForm.CreatedTime = DateTime.Now;
                 db.RMAForm.Add(rMAForm);
-                if (PropertyID!=null && PropertyID.Length>0)
-                {
-                    foreach (int propertyID in PropertyID)
-                    {
-                        
-                    }
-                }
-
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -147,6 +149,16 @@ namespace TSRD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Status,Contact,ContactInfo,RMATime,ReturnTime,Closed,PropertyID,ConsumableID,Description,Comment,CreatedTime,ModifiedTime")] RMAForm rMAForm)
         {
+            if (rMAForm.ConsumableID == null && rMAForm.PropertyID == null)
+            {
+                ModelState.AddModelError("ConsumableID", "請選擇送修財產或耗材");
+                ModelState.AddModelError("PropertyID", "請選擇送修財產或耗材");
+            }
+            if (rMAForm.ConsumableID != null && rMAForm.PropertyID != null)
+            {
+                ModelState.AddModelError("ConsumableID", "送修財產或耗材只能選擇其一，請重新選擇");
+                ModelState.AddModelError("PropertyID", "送修財產或耗材只能選擇其一，請重新選擇");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(rMAForm).State = EntityState.Modified;

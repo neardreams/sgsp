@@ -43,6 +43,7 @@ namespace TSRD.Models
         public virtual Unit Unit { get; set; }
 
         //public virtual ICollection<WorkFormProperty> WorkFormProperties { get; set; }
+        [Display(Name = "使用財產")]
         public virtual ICollection<WorkFormProperty> WorkFormProperties { get; set; }
 
         //public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }

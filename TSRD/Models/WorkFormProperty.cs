@@ -13,7 +13,7 @@ namespace TSRD.Models
         public int WorkFormID { get; set; }
         public virtual WorkForm WorkForm { get; set; }
         public int PropertyID { get; set; }
-        public virtual Property Property { get; set; }     
+        public virtual Property Property { get; set; }
         public string PropertyListedName
         {
             get

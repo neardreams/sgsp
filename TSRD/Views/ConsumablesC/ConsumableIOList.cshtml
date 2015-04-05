@@ -1,11 +1,13 @@
-﻿@model IEnumerable<TSRD.Models.ConsumableForm>
+﻿@*@model IEnumerable<TSRD.Models.ConsumableForm>*@
+@model IEnumerable<TSRD.ViewModels.ConsumableIOList>
 
 @{
 	ViewBag.TableDisplayName = "Table";
-	ViewBag.Title = "入庫/報廢清單";
+	ViewBag.Title = "耗材 出入庫紀錄";
 }
 
-<h2>@ViewData["ConsumableName"].ToString() @ViewBag.Title </h2>
+<h2>@ViewBag.Title </h2>
+<h3>@ViewData["ConsumableName"].ToString()</h3>
 
 
 <div class="row">
@@ -50,15 +52,7 @@
 @foreach (var item in Model) {
     <tr>
         <td>
-            @if (item.Amount>0)
-            {
-                @Html.Raw("入庫")
-            }
-            else
-            { 
-                @Html.Raw("報廢")
-            }
-
+            @Html.DisplayFor(modelItem => item.Status)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.Amount)

@@ -101,7 +101,7 @@ namespace <#= Namespace #>
 #>			ViewBag.<#= property.PropertyName #>  = new SelectList(from <#= property.TypeName #> d in Enum.GetValues(typeof(<#= property.TypeName #>)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
 <#				}
 		} 
-#>				pageCount = (<#= entitySetVar #>.Count() / pageSize) + 1;
+#>				pageCount =Convert.ToInt16(Math.Ceiling(Convert.ToDouble(<#= entitySetVar #>.Count()) / pageSize));
 			<#= entitySetVar #> = <#= entitySetVar #>.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -176,7 +176,7 @@ namespace <#= Namespace #>
 #>			ViewBag.<#= property.PropertyName #>  = new SelectList(from <#= property.TypeName #> d in Enum.GetValues(typeof(<#= property.TypeName #>)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
 			if (<#= property.PropertyName #>!=null)
 			{
-				<#= entitySetVar #> = <#= entitySetVar #>.Where(m => m.<#= property.PropertyName #> == <#= property.PropertyName #>).AsQueryable();
+				<#= entitySetVar #> = <#= entitySetVar #>.Where(m => m.<#= property.PropertyName #> == <#= property.PropertyName #>.Value).AsQueryable();
 			}
 <#
 			}

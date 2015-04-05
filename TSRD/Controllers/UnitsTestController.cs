@@ -25,8 +25,8 @@ namespace TSRD.Controllers
             int pageSize;
             page = 1;
             pageSize = TSRD.Global.PageSize;
-			
-				pageCount = (unit.Count() / pageSize) + 1;
+
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(unit.Count()) / pageSize));
 			unit = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -51,8 +51,8 @@ namespace TSRD.Controllers
 			{   
 	
 				unit = unit.Where(m =>m.Name.Contains(searchString) || m.Company.Contains(searchString) || m.Contact.Contains(searchString) || m.ContactInfo.Contains(searchString) || m.IDString.Contains(searchString) || m.Floor.Contains(searchString) || m.Area.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
-			}	
-            pageCount = (unit.Count() / pageSize) + 1;
+			}
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(unit.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
 			unit  = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();

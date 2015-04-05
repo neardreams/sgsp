@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TSRD.Models;
-
+using TSRD.ViewModels;
 namespace TSRD.Controllers
 {
     public class ConsumablesCController : Controller
@@ -17,30 +17,60 @@ namespace TSRD.Controllers
 
 
 
-
+        public List<ConsumableIOList> GetConsumableIOList(int id)
+        {            
+            var list = new List<ConsumableIOList>();            
+            var consumableForms = db.ConsumableForm.Where(m => m.ConsumableID == id);
+            var workformConsumables = db.WorkFormConsumable.Where(m => m.ConsumableID == id);
+            var rmaforms = db.RMAForm.Where(m => m.ConsumableID == id);
+            foreach (ConsumableForm consumableform in consumableForms)
+            {
+                if (consumableform.Amount>0)
+                    list.Add(new ConsumableIOList { Amount = consumableform.Amount,Status="入庫" });
+                else
+                    list.Add(new ConsumableIOList { Amount = consumableform.Amount, Status = "報廢" });
+            }
+            foreach (WorkFormConsumable workformconsumable in workformConsumables)
+            {
+                if (workformconsumable.Amount>0)
+                    list.Add(new ConsumableIOList { Amount = workformconsumable.Amount, Status = "安裝" ,Unit = workformconsumable.WorkForm.Unit.ListedName});
+                else
+                    list.Add(new ConsumableIOList { Amount = workformconsumable.Amount, Status = "回收", Unit = workformconsumable.WorkForm.Unit.ListedName });
+            }
+            foreach (RMAForm rmaform in rmaforms)
+            {
+                if (rmaform.Closed)
+                    list.Add(new ConsumableIOList { Amount = 0, Status = "維修(已完修)" });
+                else
+                    list.Add(new ConsumableIOList { Amount = 1, Status = "維修" });
+            }
+            return list;
+        }
         // GET: ConsumablesC
-        public ActionResult ConsumableFormList(int ID)
+        public ActionResult ConsumableIOList(int ID)
         {
-            var consumableForm = db.ConsumableForm.Where(m => m.ConsumableID == ID).Include(c => c.Consumable).AsQueryable();
+
+            var consumableIOList = GetConsumableIOList(ID).AsQueryable();
             int page;
             int pageCount;
             int pageSize;
             page = 1;
             pageSize = TSRD.Global.PageSize;
 
-            pageCount = (consumableForm.Count() / pageSize) + 1;
-            consumableForm = consumableForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(consumableIOList.Count()) / pageSize));
+            consumableIOList = consumableIOList.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
             ViewData["CurrentPage"] = 1;
             ViewData["ConsumableName"] = db.Consumable.Single(m => m.ID == ID).ListedName;
-            return View(consumableForm.ToList());
+            //return View(consumableForm.ToList());
+            return View(consumableIOList.ToList());
         }
 
-        [HttpPost, ActionName("ConsumableFormList")]
-        public ActionResult ConsumableFormList(string searchString, int? Page, int ID)
+        [HttpPost, ActionName("ConsumableIOList")]
+        public ActionResult ConsumableIOList(string searchString, int? Page, int ID)
         {
-            var consumableForm = db.ConsumableForm.Where(m=>m.ConsumableID==ID).Include(c => c.Consumable).AsQueryable();
+            var consumableIOList = GetConsumableIOList(ID).AsQueryable();
             int page;
             int pageCount;
             int pageSize;
@@ -53,17 +83,17 @@ namespace TSRD.Controllers
             if (!String.IsNullOrEmpty(searchString))
             {
 
-                consumableForm = consumableForm.Where(m => m.Description.Contains(searchString) || m.Comment.Contains(searchString)).AsQueryable();
+                consumableIOList = consumableIOList.Where(m => m.Description.Contains(searchString) || m.Comment.Contains(searchString)).AsQueryable();
             }
-            pageCount = (consumableForm.Count() / pageSize) + 1;
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(consumableIOList.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
-            consumableForm = consumableForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
+            consumableIOList = consumableIOList.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
             ViewData["SearchString"] = searchString;
             ViewData["PageCount"] = pageCount;
             ViewData["CurrentPage"] = page;
             ViewData["ConsumableName"] = db.Consumable.Single(m => m.ID == ID).ListedName;
-            return View(consumableForm.ToList());
+            return View(consumableIOList.ToList());
         }
         public ActionResult AddConsumable(int ID)
         {
@@ -71,10 +101,14 @@ namespace TSRD.Controllers
             ViewData["Consumable"] = db.Consumable.Single(m => m.ID == ID).ListedName;
             return View();
         }
-        [HttpPost]
+        [HttpPost, ActionName("AddConsumable")]
         [ValidateAntiForgeryToken]
         public ActionResult AddConsumable([Bind(Include = "ID,Amount,ConsumableID,Description,Comment,CreatedTime,ModifiedTime")] ConsumableForm consumableForm)
         {
+            if (consumableForm.Amount <= 0)
+            {
+                ModelState.AddModelError("Amount", "數量有誤，請重新輸入");
+            }
             if (ModelState.IsValid)
             {
                 consumableForm.CreatedTime = DateTime.Now;
@@ -96,6 +130,10 @@ namespace TSRD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConsumable([Bind(Include = "ID,Amount,ConsumableID,Description,Comment,CreatedTime,ModifiedTime")] ConsumableForm consumableForm)
         {            
+            if (consumableForm.Amount<=0)
+            {
+                ModelState.AddModelError("Amount", "數量有誤，請重新輸入");
+            }
             if (ModelState.IsValid)
             {
                 consumableForm.Amount = -consumableForm.Amount;
@@ -182,8 +220,18 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ID,Name,NO,Amount,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Consumable consumable)
+        public ActionResult Create([Bind(Include = "ID,Name,NO,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Consumable consumable)
         {
+            var existConsumable = db.Consumable.Where(m => m.NO.Equals(consumable.NO)).AsQueryable();
+            if (existConsumable.Count()>0)
+            {
+                ModelState.AddModelError("NO", "耗材編號重複，請檢查後重試");
+            }
+            existConsumable = db.Consumable.Where(m => m.Name.Equals(consumable.Name)).AsQueryable();
+            if (existConsumable.Count() > 0)
+            {
+                ModelState.AddModelError("Name", "耗材名稱重複，請檢查後重試");
+            }
             if (ModelState.IsValid)
             {
 				consumable.CreatedTime = DateTime.Now;
@@ -215,8 +263,18 @@ namespace TSRD.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ID,Name,NO,Amount,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Consumable consumable)
+        public ActionResult Edit([Bind(Include = "ID,Name,NO,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Consumable consumable)
         {
+            var existConsumable = db.Consumable.Where(m => m.NO.Equals(consumable.NO) && m.ID!=consumable.ID).AsQueryable();
+            if (existConsumable.Count() > 0)
+            {
+                ModelState.AddModelError("NO", "耗材編號重複，請檢查後重試");
+            }
+            existConsumable = db.Consumable.Where(m => m.Name.Equals(consumable.Name) && m.ID != consumable.ID).AsQueryable();
+            if (existConsumable.Count() > 0)
+            {
+                ModelState.AddModelError("Name", "耗材名稱重複，請檢查後重試");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(consumable).State = EntityState.Modified;

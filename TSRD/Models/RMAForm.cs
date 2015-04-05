@@ -41,10 +41,12 @@ namespace TSRD.Models
         public int? PropertyID { get; set; }
 
         [Display(Name = "財產")]
-        public virtual Property Property { get; set; }
+        public Property Property { get; set; }
 
+        [Display(Name = "耗材")]        
         public int? ConsumableID { get; set; }
 
+        [Display(Name = "耗材")]
         public virtual Consumable Consumable { get; set; }
 
         //public int UnitID { get; set; }

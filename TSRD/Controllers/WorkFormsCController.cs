@@ -27,7 +27,7 @@ namespace TSRD.Controllers
             pageSize = TSRD.Global.PageSize;
 			
 			ViewBag.WorkFormType  = new SelectList(from TSRD.Enums.WorkFormType d in Enum.GetValues(typeof(TSRD.Enums.WorkFormType)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
-				pageCount = (workForm.Count() / pageSize) + 1;
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(workForm.Count()) / pageSize));
 			workForm = workForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -54,11 +54,12 @@ namespace TSRD.Controllers
 				workForm = workForm.Where(m =>m.Contact.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
 			}	
 			ViewBag.WorkFormType  = new SelectList(from TSRD.Enums.WorkFormType d in Enum.GetValues(typeof(TSRD.Enums.WorkFormType)) select new { ID = (int)d, Name = d.ToString() },"ID","Name");
-			if (WorkFormType!=null)
+            
+            if (WorkFormType!=null)
 			{
-				workForm = workForm.Where(m => m.WorkFormType == WorkFormType).AsQueryable();
+				workForm = workForm.Where(m => m.WorkFormType == WorkFormType.Value).AsQueryable();
 			}
-            pageCount = (workForm.Count() / pageSize) + 1;
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(workForm.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
 			workForm  = workForm.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();

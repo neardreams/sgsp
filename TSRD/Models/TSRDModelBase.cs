@@ -61,16 +61,6 @@ namespace TSRD.Models
     }
 
 
-    public class Test
-    {
-        [Key]
-        public int ID { get; set; }
-        public int Amount { get; set; }
-        public int ID1 { get; set; }
-        public int ID2 { get; set; }
-        public int ID3 { get; set; }
-    }
-       
 
     //public class WorkFormProperty :TSRDModelBase
     //{
@@ -118,15 +108,15 @@ namespace TSRD.Models
     public class DefaultConnection : DbContext
     {
         public DbSet<Unit> Unit { get; set; }
-        public DbSet<RMAForm> RMAForm { get; set; }
-        public DbSet<WorkForm> WorkForm { get; set; }
         public DbSet<Property> Property { get; set; }
-        public DbSet<PropertyType> PropertyType { get; set; }
         public DbSet<Consumable> Consumable { get; set; }
+        public DbSet<RMAForm> RMAForm { get; set; }
+        public DbSet<WorkForm> WorkForm { get; set; }        
+        public DbSet<PropertyType> PropertyType { get; set; }
+        public DbSet<PropertyForm> PropertyForm { get; set; }
         public DbSet<ConsumableForm> ConsumableForm { get; set; }
         public DbSet<WorkFormConsumable> WorkFormConsumable { get; set; }
         public DbSet<WorkFormProperty> WorkFormProperty { get; set; }
-        public DbSet<Test> Test { get; set; }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {                    
             

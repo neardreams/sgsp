@@ -26,8 +26,8 @@ namespace TSRD.Controllers
             int pageSize;
             page = 1;
             pageSize = TSRD.Global.PageSize;
-			
-				pageCount = (unit.Count() / pageSize) + 1;
+
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(unit.Count()) / pageSize));
 			unit = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();			
             ViewData["SearchString"] = "";
             ViewData["PageCount"] = pageCount;
@@ -52,8 +52,8 @@ namespace TSRD.Controllers
 			{   
 	
 				unit = unit.Where(m =>m.Name.Contains(searchString) || m.Company.Contains(searchString) || m.Contact.Contains(searchString) || m.ContactInfo.Contains(searchString) || m.IDString.Contains(searchString) || m.Floor.Contains(searchString) || m.Area.Contains(searchString) || m.Description.Contains(searchString) || m.Comment.Contains(searchString) ).AsQueryable();
-			}	
-            pageCount = (unit.Count() / pageSize) + 1;
+			}
+            pageCount = Convert.ToInt16(Math.Ceiling(Convert.ToDouble(unit.Count()) / pageSize));
             if (page > pageCount)
                 page = pageCount;
 			unit  = unit.OrderByDescending(m => m.ID).Skip(pageSize * (page - 1)).Take(pageSize).AsQueryable();
@@ -103,8 +103,18 @@ namespace TSRD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
         {
-            if (ModelState.IsValid)
+            var existUnitCount = db.Unit.Where(m => m.Name.Equals(unit.Name)).Where(m => m.Enabled == true).Count();
+            if (existUnitCount>0)
             {
+                ModelState.AddModelError("Name", "名稱重複，請檢查後重試");
+            }
+            existUnitCount = db.Unit.Where(m => m.IDString.Equals(unit.IDString)).Where(m => m.Enabled == true).Count();
+            if (existUnitCount > 0)
+            {
+                ModelState.AddModelError("IDString", "櫃號/員編重複，請檢查後重試");
+            }
+            if (ModelState.IsValid)
+            {                
 				//unit.CreatedTime = DateTime.Now;
                 db.Unit.Add(unit);
                 db.SaveChanges();
@@ -136,6 +146,16 @@ namespace TSRD.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "ID,Name,Company,Contact,ContactInfo,IDString,Floor,Area,Enabled,Description,Comment,CreatedTime,ModifiedTime")] Unit unit)
         {
+            var existUnitCount = db.Unit.Where(m => m.Name.Equals(unit.Name) && m.ID != unit.ID).Where(m => m.Enabled == true).AsQueryable();
+            if (existUnitCount.Count() > 0)
+            {
+                    ModelState.AddModelError("Name", "名稱重複，請檢查後重試");
+            }
+            existUnitCount = db.Unit.Where(m => m.IDString.Equals(unit.IDString) && m.ID!=unit.ID).Where(m => m.Enabled == true).AsQueryable();
+            if (existUnitCount.Count() > 0)
+            {
+                ModelState.AddModelError("IDString", "櫃號/員編重複，請檢查後重試");
+            }
             if (ModelState.IsValid)
             {
                 db.Entry(unit).State = EntityState.Modified;

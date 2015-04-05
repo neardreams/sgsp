@@ -11,11 +11,11 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.PropertyType.Type)
+            @Html.DisplayNameFor(model => model.PropertyType.Name)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.PropertyType.Type)
+            @Html.DisplayFor(model => model.PropertyType.Name)
         </dd>
 
         <dt>
@@ -77,6 +77,5 @@
     </dl>
 </div>
 <p>
-    @Html.ActionLink("編輯", "Edit", new { id = Model.ID }) |
     @Html.ActionLink("回到清單", "Index")
 </p>

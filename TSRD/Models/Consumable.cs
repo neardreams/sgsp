@@ -22,7 +22,21 @@ namespace TSRD.Models
         public string NO { get; set; }
 
         [Display(Name = "數量")]
-        public int Amount { get; set; }
+        public virtual int Amount {
+            get{
+
+                var cosumableFormsSum =0;
+                var workformConsumables=0;
+                var rmaforms = 0;
+                if (ConsumableForms != null)
+                    cosumableFormsSum = ConsumableForms.Sum(m => m.Amount);
+                if (WorkFormConsumables != null)
+                    workformConsumables = WorkFormConsumables.Sum(m => m.Amount);
+                if (RMAForms!=null)
+                    rmaforms = RMAForms.Where(m => m.Closed == false).Count();
+                return cosumableFormsSum - workformConsumables - rmaforms;
+            }
+        }
 
         [Display(Name = "已啟用")]
         public bool Enabled { get; set; }
@@ -30,10 +44,11 @@ namespace TSRD.Models
 
         //public int CreatorID { get; set; }
         //public int ModifierID { get; set; }                
-
-        //public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }
-
+        public virtual ICollection<ConsumableForm> ConsumableForms { get; set; }
+        public virtual ICollection<WorkFormConsumable> WorkFormConsumables { get; set; }
         public virtual ICollection<RMAForm> RMAForms { get; set; }
+
+        //public virtual ICollection<RMAForm> RMAForms { get; set; }
 
 
 
